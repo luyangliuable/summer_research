@@ -4,6 +4,8 @@ from typing import List, TypeVar
 
 T = TypeVar("T")
 
+wildcard_identifier = '*'
+
 def extract_comment_from_line(files: List[T], language: str) -> List[T]:
     res = []
     for file in files:
@@ -15,14 +17,14 @@ def searchFile(fileName: str, path: str) -> List[T]:
     print("Searching in path: " + path + " for " + fileName)
     res = []
     for root, dirs, files in os.walk(path):
-        if fileName[0] == '*':
-            for Files in files:
-                sameFormat = checkFileSameFormat(fileName, Files)
+        if fileName[0] == wildcard_identifier:
+            for file in files:
+                sameFormat = checkFileSameFormat(fileName, file)
                 if sameFormat:
                     print(root)
-                    res.append(root + "/" + Files)
+                    res.append(root + "/" + file)
         else:
-            found = Files.find(fileName)
+            found = file.find(fileName)
             if found != -1:
                 break
     return res
@@ -35,6 +37,7 @@ def checkFileSameFormat(fileOne: str, fileTwo:str) -> bool:
         counter += 1
 
     return True
+
 
 
 f = open("script.py", "r")
