@@ -9,8 +9,10 @@ wildcard_identifier = '*'
 def extract_comment_from_line(files: List[T], language: str) -> List[T]:
     res = []
     for file in files:
-        print(comment_parser.extract_comments(file, mime='text/x-python'))
-        res.append(comment_parser.extract_comments(file, mime='text/x-python'))
+        loc = get_every_line_from_file(file)
+        comment = find_text_enclosed_inside(loc, "#")
+        # print(comment_parser.extract_comments(file, mime='text/x-python'))
+        # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
     return res;
 
 def searchFile(fileName: str, path: str) -> List[T]:
@@ -39,10 +41,36 @@ def checkFileSameFormat(fileOne: str, fileTwo:str) -> bool:
     return True
 
 
+def find_text_enclosed_inside(line_of_code: str, sexp: str) -> str:
+    active = False
+    literal_specifiers = "\""
+    res = ""
+    for i in line_of_code:
 
-f = open("script.py", "r")
-print(checkFileSameFormat("a.py", "b.py"))
-found_files = searchFile('*.py', '.')
-print(found_files)
-found_comments = extract_comment_from_line(found_files, 'python')
-print(found_comments)
+        if active and i not in sexp:
+            res += i
+        if i in sexp:
+            active = not active
+        else:
+            pass
+    return res
+
+def get_every_line_from_file(file: str) -> List[T]:
+    file = open(file, 'r')
+
+    lines = file.readlines()
+    return lines
+
+loc = get_every_line_from_file('app.py')
+
+for line in loc:
+    comment = find_text_enclosed_inside(line, "#")
+    print("comment is: " + comment)
+
+# f = open("script.py", "r")
+# print(checkFileSameFormat("a.py", "b.py"))
+# found_files = searchFile('*.py', '.')
+# print(found_files)
+
+# found_comments = extract_comment_from_line(found_files, 'python')
+# print(found_comments)
