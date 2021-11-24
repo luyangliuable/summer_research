@@ -4,8 +4,12 @@ from typing import List, TypeVar
 
 T = TypeVar("T")
 
-def extract_comment_from_line(file: str) -> str:
-    return comment_parser.extract_comments(file, mime='text/x-python')
+def extract_comment_from_line(files: List[T], language: str) -> List[T]:
+    res = []
+    for file in files:
+        print(comment_parser.extract_comments(file, mime='text/x-python'))
+        res.append(comment_parser.extract_comments(file, mime='text/x-python'))
+    return res;
 
 def searchFile(fileName: str, path: str) -> List[T]:
     print("Searching in path: " + path + " for " + fileName)
@@ -15,12 +19,11 @@ def searchFile(fileName: str, path: str) -> List[T]:
             for Files in files:
                 sameFormat = checkFileSameFormat(fileName, Files)
                 if sameFormat:
-                    # res.append(Files)
-                    res.append("./" + (dirs[0] + "/" if len(dirs) > 0 else "") + Files)
+                    print(root)
+                    res.append(root + "/" + Files)
         else:
             found = Files.find(fileName)
             if found != -1:
-                # res.append(fileName)
                 break
     return res
 
@@ -36,6 +39,7 @@ def checkFileSameFormat(fileOne: str, fileTwo:str) -> bool:
 
 f = open("script.py", "r")
 print(checkFileSameFormat("a.py", "b.py"))
-print(searchFile('*.py', './'))
-# print(f.read())
-# print(extract_comment_from_line('./test-folder/script.py'))
+found_files = searchFile('*.py', '.')
+print(found_files)
+found_comments = extract_comment_from_line(found_files, 'python')
+print(found_comments)
