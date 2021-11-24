@@ -9,10 +9,12 @@ wildcard_identifier = '*'
 def extract_comment_from_line(files: List[T], language: str) -> List[T]:
     res = []
     for file in files:
-        loc = get_every_line_from_file(file)
-        comment = find_text_enclosed_inside(loc, "#")
-        # print(comment_parser.extract_comments(file, mime='text/x-python'))
-        # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
+        lines = get_every_line_from_file(file)
+        for line in lines:
+            comment = find_text_enclosed_inside(line, "#")
+            print(comment)
+            # print(comment_parser.extract_comments(file, mime='text/x-python'))
+            # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
     return res;
 
 def searchFile(fileName: str, path: str) -> List[T]:
@@ -61,11 +63,13 @@ def get_every_line_from_file(file: str) -> List[T]:
     lines = file.readlines()
     return lines
 
-loc = get_every_line_from_file('app.py')
+extract_comment_from_line([ 'app.py' ], 'python')
 
-for line in loc:
-    comment = find_text_enclosed_inside(line, "#")
-    print("comment is: " + comment)
+# loc = get_every_line_from_file('app.py')
+
+# for line in loc:
+#     comment = find_text_enclosed_inside(line, "#")
+#     print("comment is: " + comment)
 
 # f = open("script.py", "r")
 # print(checkFileSameFormat("a.py", "b.py"))
