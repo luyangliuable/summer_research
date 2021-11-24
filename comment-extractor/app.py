@@ -19,6 +19,8 @@ def extract_comment_from_path(directory: str, language: str) -> List[T]:
     files = []
     if language == 'python':
         files = files + searchFile('*.py', directory)
+    elif language == 'c':
+        files = files + searchFile('*.c', directory)
 
     lines = []
     for file in files:
@@ -37,9 +39,16 @@ def extract_comment_from_line_list(lines: List[T], language: str) -> List[T]:
     lines -- list of lines to extract the comment from
     languages -- the language the lines are written in
     """
+
+    multiline_comment = False
+
     res = []
+
     for line in lines:
         if language == 'python':
+            if "\"\"\"" in line:
+                multiline_comment = True
+                comment = find_text_enclosed_inside(line, "\"\"\"")
             comment = find_text_enclosed_inside(line, "#")
         elif language == 'c':
             comment = find_text_enclosed_inside(line, '//')
@@ -85,6 +94,21 @@ def checkFileSameFormat(fileOne: str, fileTwo:str) -> bool:
 
     return True
 
+def check_triggers_multiline_comment(line:str, multiline_sexp: str) -> bool:
+    triggers_multiline = False
+    multiline_sexp_length = len(multiline_sexp)
+    res = ""
+    start_of_comment = None
+    for which_line_column in range(len(line)):
+        comment_specifier = ""
+        for which_sexp_column in range(multiline_sexp_length):
+            if which_sexp_column + which_line_column < len(line):
+                comment_specifier += line[which_line_column + which_sexp_column]
+
+        if comment_specifier in multiline_sexp:
+            triggers_multiline = not triggers_multiline
+
+    return triggers_multiline
 
 def find_text_enclosed_inside(line: str, sexp: str) -> str:
     """Find a text contained inside a sexp (s-expression)
@@ -93,28 +117,28 @@ def find_text_enclosed_inside(line: str, sexp: str) -> str:
     line: the line from which to find string enclosed inside the s-expression
     sexp: s-expression incl. for example ({})[]
     """
-    active = False
+    line_comment_active = False
+
     sexp_length = len(sexp)
     res = ""
     start_of_comment = None
-    for which_column in range(len(line)):
+    for which_line_column in range(len(line)):
         comment_specifier = ""
-        for w in range(sexp_length):
-            if w + which_column < len(line):
-                assert which_column + w >=0
-                assert which_column + w < len(line)
-                comment_specifier += line[which_column + w]
+        for which_sexp_column in range(sexp_length):
+            if which_sexp_column + which_line_column < len(line):
+                assert which_line_column + which_sexp_column >=0
+                assert which_line_column + which_sexp_column < len(line)
+                comment_specifier += line[which_line_column + which_sexp_column]
 
         # comment_specifier = [str(line[w+which_column]) + str(line[which_column+w+1]) if w+which_column+1 < len(line) else "" for w in range(sexp_length)][0]
 
-        if active and comment_specifier not in sexp and which_column - start_of_comment + sexp_length <= len(line):
-            if which_column >= start_of_comment:
-                print(start_of_comment)
-                res += line[which_column]
+        if line_comment_active and comment_specifier not in sexp and which_line_column - start_of_comment + sexp_length <= len(line):
+            if which_line_column >= start_of_comment:
+                res += line[which_line_column]
 
         if comment_specifier in sexp:
-            active = not active
-            start_of_comment = which_column + sexp_length
+            line_comment_active = not line_comment_active
+            start_of_comment = which_line_column + sexp_length
         else:
             pass
     return res
@@ -124,16 +148,21 @@ def get_every_line_from_file(file: str) -> List[T]:
     lines = file.readlines()
     return lines
 
-# extracted_comments = extract_comment_from_path('./test-folder', 'python')
-# print(extracted_comments)
+extracted_comments = extract_comment_from_path('./test-folder', 'python')
+print(check_triggers_multiline_comment('"""ssdsad', '"""'))
+print(extracted_comments)
 
 # comments = extract_comment_from_line([ './test-folder/a.py' ], 'python')
 # print(comments)
 
-# loc = get_every_line_from_file('app.py')
+# loc = get_every_line_from_file('app.py')[
 
-comment = find_text_enclosed_inside("asd sad ///*assad", "///*")
-print("comment is: " + comment)
+# comment = find_text_enclosed_inside("asd sad ///*assad", "///*")
+# print("comment is: " + comment)
+
+
+# comment = find_text_enclosed_inside("asd sad ///*assad", "///*")
+# print("comment is: " + comment)
 
 # f = open("script.py", "r")
 # print(checkFileSameFormat("a.py", "b.py"))
