@@ -1,0 +1,743 @@
+/*
+
+ * Copyright © 2020 Intel Corporation
+
+/*
+
+ * Kernel for PAVP buffer clear.
+
+ *
+
+ *	1. Clear all 64 GRF registers assigned to the kernel with designated value;
+
+ *	2. Write 32x16 block of all "0" to render target buffer which indirectly clears
+
+ *	   512 bytes of Render Cache.
+
+ Store designated "clear GRF" value */
+
+
+
+/**
+
+ * Curbe Format
+
+ *
+
+ * DW 1.0 - Block Offset to write Render Cache
+
+ * DW 1.1 [15:0] - Clear Word
+
+ * DW 1.2 - Delay iterations
+
+ * DW 1.3 - Enable Instrumentation (only for debug)
+
+ * DW 1.4 - Rsvd (intended for context ID)
+
+ * DW 1.5 - [31:16]:SliceCount, [15:0]:SubSlicePerSliceCount
+
+ * DW 1.6 - Rsvd MBZ (intended for Enable Wait on Total Thread Count)
+
+ * DW 1.7 - Rsvd MBZ (inteded for Total Thread Count)
+
+ *
+
+ * Binding Table
+
+ *
+
+ * BTI 0: 2D Surface to help clear L3 (Render/Data Cache)
+
+ * BTI 1: Wait/Instrumentation Buffer
+
+ *  Size : (SliceCount * SubSliceCount  * 16 EUs/SubSlice) rows * (16 threads/EU) cols (Format R32_UINT)
+
+ *         Expected to be initialized to 0 by driver/another kernel
+
+ *  Layout:
+
+ *          RowN: Histogram for EU-N: (SliceID*SubSlicePerSliceCount + SSID)*16 + EUID [assume max 16 EUs / SS]
+
+ *          Col-k[DW-k]: Threads Executed on ThreadID-k for EU-N
+
+ /* Loop count to delay kernel: Init to (g1.2 + 1) */
+
+
+
+
+
+/**
+
+ * State Register has info on where this thread is running
+
+ *	IVB: sr0.0 :: [15:13]: MBZ, 12: HSID (Half-Slice ID), [11:8]EUID, [2:0] ThreadSlotID
+
+ *	HSW: sr0.0 :: 15: MBZ, [14:13]: SliceID, 12: HSID (Half-Slice ID), [11:8]EUID, [2:0] ThreadSlotID
+
+
+
+
+
+ /* g3 has HSID */
+
+
+
+ /* g3.1 has sliceID */
+
+
+
+ /* g3 = sliceID * SubSlicePerSliceCount + HSID */
+
+
+
+ /* g3.2 = EUID */
+
+
+
+ /* g3.2 now points to EU row number (Y-pixel = V address )  in instrumentation surf */
+
+
+
+
+
+
+
+ /* Initialize message header with g0 */
+
+ /* Block offset */
+
+ /* Block offset */
+
+ /* Block size (1 row x 4 bytes) */
+
+
+
+ Media block read to fetch current value at specified location in instrumentation buffer */
+
+
+
+
+
+ Media block write for updated value at specified location in instrumentation buffer */
+
+
+
+ Delay thread for specified parameter */
+
+
+
+
+
+ Store designated "clear GRF" value */
+
+
+
+ Initialize looping parameters */
+
+ /* Initialize a0.0:w=0 */
+
+ /* Loop count. Each loop contains 16 GRF's */
+
+ Write 32x16 all "0" block */
+
+
+
+
+
+
+
+ /* Block size (16x16) */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ Now, clear all GRF registers */
+
+
+
+
+
+
+
+
+
+ Terminante the thread */
+
+
+
+/*
+
+ * Copyright © 2020 Intel Corporation
+
+/*
+
+ * Kernel for PAVP buffer clear.
+
+ *
+
+ *	1. Clear all 64 GRF registers assigned to the kernel with designated value;
+
+ *	2. Write 32x16 block of all "0" to render target buffer which indirectly clears
+
+ *	   512 bytes of Render Cache.
+
+ Store designated "clear GRF" value */
+
+
+
+/**
+
+ * Curbe Format
+
+ *
+
+ * DW 1.0 - Block Offset to write Render Cache
+
+ * DW 1.1 [15:0] - Clear Word
+
+ * DW 1.2 - Delay iterations
+
+ * DW 1.3 - Enable Instrumentation (only for debug)
+
+ * DW 1.4 - Rsvd (intended for context ID)
+
+ * DW 1.5 - [31:16]:SliceCount, [15:0]:SubSlicePerSliceCount
+
+ * DW 1.6 - Rsvd MBZ (intended for Enable Wait on Total Thread Count)
+
+ * DW 1.7 - Rsvd MBZ (inteded for Total Thread Count)
+
+ *
+
+ * Binding Table
+
+ *
+
+ * BTI 0: 2D Surface to help clear L3 (Render/Data Cache)
+
+ * BTI 1: Wait/Instrumentation Buffer
+
+ *  Size : (SliceCount * SubSliceCount  * 16 EUs/SubSlice) rows * (16 threads/EU) cols (Format R32_UINT)
+
+ *         Expected to be initialized to 0 by driver/another kernel
+
+ *  Layout :
+
+ *           RowN: Histogram for EU-N: (SliceID*SubSlicePerSliceCount + SSID)*16 + EUID [assume max 16 EUs / SS]
+
+ *           Col-k[DW-k]: Threads Executed on ThreadID-k for EU-N
+
+ /* Loop count to delay kernel: Init to (g1.2 + 1) */
+
+
+
+
+
+/**
+
+ * State Register has info on where this thread is running
+
+ *	IVB: sr0.0 :: [15:13]: MBZ, 12: HSID (Half-Slice ID), [11:8]EUID, [2:0] ThreadSlotID
+
+ *	HSW: sr0.0 :: 15: MBZ, [14:13]: SliceID, 12: HSID (Half-Slice ID), [11:8]EUID, [2:0] ThreadSlotID
+
+
+
+
+
+ /* g3 has HSID */
+
+
+
+ /* g3.1 has sliceID */
+
+
+
+ /* g3 = sliceID * SubSlicePerSliceCount + HSID */
+
+
+
+ /* g3.2 = EUID */
+
+
+
+ /* g3.2 now points to EU row number (Y-pixel = V address )  in instrumentation surf */
+
+
+
+
+
+
+
+ /* Initialize message header with g0 */
+
+ /* Block offset */
+
+ /* Block offset */
+
+ /* Block size (1 row x 4 bytes) */
+
+
+
+ Media block read to fetch current value at specified location in instrumentation buffer */
+
+
+
+
+
+ Media block write for updated value at specified location in instrumentation buffer */
+
+
+
+ Delay thread for specified parameter */
+
+
+
+
+
+ Store designated "clear GRF" value */
+
+
+
+ Initialize looping parameters */
+
+ /* Initialize a0.0:w=0 */
+
+ /* Loop count. Each loop contains 16 GRF's */
+
+ Write 32x16 all "0" block */
+
+
+
+
+
+
+
+ /* Block size (16x16) */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ Now, clear all GRF registers */
+
+
+
+
+
+
+
+
+
+ Terminante the thread */
+
+
+
+/*
+
+ * Copyright 2018 Advanced Micro Devices, Inc.
+
+ *
+
+ * Permission is hereby granted, free of charge, to any person obtaining a
+
+ * copy of this software and associated documentation files (the "Software"),
+
+ * to deal in the Software without restriction, including without limitation
+
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+
+ * and/or sell copies of the Software, and to permit persons to whom the
+
+ * Software is furnished to do so, subject to the following conditions:
+
+ *
+
+ * The above copyright notice and this permission notice shall be included in
+
+ * all copies or substantial portions of the Software.
+
+ *
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+
+ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+
+ * OTHER DEALINGS IN THE SOFTWARE.
+
+/* To compile this assembly code:
+
+ *
+
+ * Navi1x:
+
+ *   cpp -DASIC_TARGET_NAVI1X=1 cwsr_trap_handler_gfx10.asm -P -o nv1x.sp3
+
+ *   sp3-nv1x nv1x.sp3 -hex nv1x.hex
+
+ *
+
+ * Others:
+
+ *   cpp -DASIC_TARGET_NAVI1X=0 cwsr_trap_handler_gfx10.asm -P -o gfx10.sp3
+
+ *   sp3-gfx10 gfx10.sp3 -hex gfx10.hex
+
+ inform SPI the readiness and wait for SPI's go signal */
+
+ setup Resource Contants */
+
+ global mem offset */
+
+ save first 4 VGPRs, needed for SGPR save */
+
+ save HW registers */
+
+ save SGPRs */
+
+ save LDS */
+
+
+
+ save VGPRs  - set the Rest VGPRs */
+
+ Setup Resource Contants */
+
+ restore LDS */
+
+ restore VGPRs */
+
+ VGPR restore on v0 */
+
+ VGPR restore on v0 */
+
+ restore SGPRs */
+
+ restore HW registers */
+
+ sgpr_idx < 16
+ sgpr_idx < 12
+/*
+
+ * Copyright 2015-2017 Advanced Micro Devices, Inc.
+
+ *
+
+ * Permission is hereby granted, free of charge, to any person obtaining a
+
+ * copy of this software and associated documentation files (the "Software"),
+
+ * to deal in the Software without restriction, including without limitation
+
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+
+ * and/or sell copies of the Software, and to permit persons to whom the
+
+ * Software is furnished to do so, subject to the following conditions:
+
+ *
+
+ * The above copyright notice and this permission notice shall be included in
+
+ * all copies or substantial portions of the Software.
+
+ *
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+
+ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+
+ * OTHER DEALINGS IN THE SOFTWARE.
+
+/* To compile this assembly code:
+
+ * PROJECT=vi ./sp3 cwsr_trap_handler_gfx8.asm -hex tmp.hex
+
+*************************************************************************/
+
+                      variables                                         */
+
+*************************************************************************/
+
+      Save        */
+
+      Restore     */
+
+*************************************************************************/
+
+                      trap handler entry points                         */
+
+*************************************************************************/
+
+ Shader Main*/
+
+ read tba and tma for next level trap handler, ttmp4 is used as s_save_status */
+
+*************************************************************************/
+
+                      save routine                                      */
+
+*************************************************************************/
+
+      inform SPI the readiness and wait for SPI's go signal */
+
+      setup Resource Contants    */
+
+      global mem offset           */
+
+      save HW registers   */
+
+      the first wave in the threadgroup    */
+
+          save SGPRs      */
+
+          save first 4 VGPR, then LDS save could use   */
+
+          save LDS        */
+
+
+
+          save VGPRs  - set the Rest VGPRs        */
+
+*************************************************************************/
+
+                      restore routine                                   */
+
+*************************************************************************/
+
+      Setup Resource Contants    */
+
+      global mem offset           */
+
+      the first wave in the threadgroup    */
+
+          restore LDS     */
+
+          restore VGPRs       */
+
+ VGPR restore on v0 */
+
+          restore SGPRs       */
+
+    /* If 112 SGPRs ar allocated, 4 sgprs are not used TBA(108,109),TMA(110,111),
+
+       However, we are safe to restore these 4 SGPRs anyway, since TBA,TMA will later be restored by HWREG
+
+      restore HW registers    */
+
+*************************************************************************/
+
+                      the END                                           */
+
+*************************************************************************/
+
+*************************************************************************/
+
+                      the helper functions                              */
+
+*************************************************************************/
+
+/*
+
+ * Copyright 2016 Advanced Micro Devices, Inc.
+
+ *
+
+ * Permission is hereby granted, free of charge, to any person obtaining a
+
+ * copy of this software and associated documentation files (the "Software"),
+
+ * to deal in the Software without restriction, including without limitation
+
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+
+ * and/or sell copies of the Software, and to permit persons to whom the
+
+ * Software is furnished to do so, subject to the following conditions:
+
+ *
+
+ * The above copyright notice and this permission notice shall be included in
+
+ * all copies or substantial portions of the Software.
+
+ *
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+
+ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+
+ * OTHER DEALINGS IN THE SOFTWARE.
+
+/* To compile this assembly code:
+
+ *
+
+ * gfx9:
+
+ *   cpp -DASIC_FAMILY=CHIP_VEGAM cwsr_trap_handler_gfx9.asm -P -o gfx9.sp3
+
+ *   sp3 gfx9.sp3 -hex gfx9.hex
+
+ *
+
+ * arcturus:
+
+ *   cpp -DASIC_FAMILY=CHIP_ARCTURUS cwsr_trap_handler_gfx9.asm -P -o arcturus.sp3
+
+ *   sp3 arcturus.sp3 -hex arcturus.hex
+
+ *
+
+ * aldebaran:
+
+ *   cpp -DASIC_FAMILY=CHIP_ALDEBARAN cwsr_trap_handler_gfx9.asm -P -o aldebaran.sp3
+
+ *   sp3 aldebaran.sp3 -hex aldebaran.hex
+
+*************************************************************************/
+
+			variables					  */
+
+*************************************************************************/
+
+	Save	    */
+
+	Restore	    */
+
+*************************************************************************/
+
+			trap handler entry points			  */
+
+*************************************************************************/
+
+ Shader Main*/
+
+*************************************************************************/
+
+			save routine					  */
+
+*************************************************************************/
+
+	    inform SPI the readiness and wait for SPI's go signal */
+
+	    setup Resource Contants    */
+
+	    global mem offset		*/
+
+	    save HW registers	*/
+
+	    the first wave in the threadgroup	 */
+
+		save SGPRs	*/
+
+		save first 4 VGPR, then LDS save could use   */
+
+		save LDS	*/
+
+
+
+		save VGPRs  - set the Rest VGPRs	*/
+
+ vgpr < 4
+ vgpr < 4
+*************************************************************************/
+
+			restore routine					  */
+
+*************************************************************************/
+
+	    Setup Resource Contants    */
+
+	    global mem offset		*/
+
+	    the first wave in the threadgroup	 */
+
+		restore LDS	*/
+
+		restore VGPRs	    */
+
+ vgpr < 4
+		restore SGPRs	    */
+
+	    restore HW registers    */
+
+*************************************************************************/
+
+			the END						  */
+
+*************************************************************************/
+
+*************************************************************************/
+
+			the helper functions				  */
+
+*************************************************************************/
+
+ lane < 4
+ vgpr < n_vgprs

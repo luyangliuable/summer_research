@@ -2,7 +2,6 @@ import os
 from comment_parser import comment_parser
 from typing import TypeVar, Generic, List, NewType
 
-
 T = TypeVar("T")
 
 wildcard_identifier = '*'
@@ -10,19 +9,22 @@ wildcard_identifier = '*'
 c_comment = {
     "multiline_start": '/*',
     "multiline_end": '*/',
-    "single_line": ['//', '/*']
+    "single_line": ['//', '/*'],
+    "format": 'c'
 }
 
 python_comment = {
     "multiline_start": '"""',
     "multiline_end": '"""',
-    "single_line": ['#', '"""']
+    "single_line": ['#', '"""'],
+    "format": 'py'
 }
 
 asm_comment = {
     "multiline_start": '/*',
     "multiline_end": '*/',
-    "single_line": [';', '/*']
+    "single_line": [';', '/*'],
+    "format": 'asm'
 }
 
 
@@ -35,7 +37,8 @@ with a backslash character
 makefile_comment = {
     "multiline_start": '',
     "multiline_end": '',
-    "single_line": ['#']
+    "single_line": ['#'],
+    "format": 'makefile'
 }
 
 shell_comment = makefile_comment
@@ -43,7 +46,8 @@ shell_comment = makefile_comment
 perl_comment = {
     "multiline_start": '=',
     "multiline_end": '=',
-    "single_line": ['#', '=']
+    "single_line": ['#', '='],
+    "format": 'pl'
 }
 
 def get_every_line_from_file(file: str) -> List[T]:
@@ -51,7 +55,7 @@ def get_every_line_from_file(file: str) -> List[T]:
     lines = file.readlines()
     return lines
 
-def extract_comment_from_path(directory: str, language: dict):
+def extract_comment_from_path(directory: str, language: dict, output_dir: str):
     """Extracts all comments from file contained inside a path
 
     Keyword Arguments:
@@ -62,18 +66,31 @@ def extract_comment_from_path(directory: str, language: dict):
     language -- the programming language to search in
     """
     files = []
-    comment_dir = create_comment_file("./comment_csv_files")
+    dir = "./comment_csv_files/linux_kernal_makefile"
+    comment_dir = create_comment_file(output_dir)
 
-    if language is python_comment:
-        files = files + searchFile('*.py', directory)
-    elif language is c_comment:
-        files = files + searchFile('*.c', directory)
+    files = files + searchFile('*' + language["format"], directory)
 
+    # if language is python_comment:
+    #     files = files + searchFile('*.py', directory)
+    # elif language is c_comment:
+    #     files = files + searchFile('*.c', directory)
+    # elif language is asm_comment:
+    #     files = files + searchFile('*.asm', directory)
+    # elif language is makefile_comment:
+    #     files = files + searchFile('*.makefile', directory)
+
+    line_counter = 0;
+    max_line_per_file = 50000
     for file in files:
+        if line_counter > max_line_per_file:
+            comment_dir = create_comment_file(output_dir)
+            line_counter = 0
         # print("extracting comment from: " + file)
         lines_in_file = get_every_line_from_file(file)
         comments_in_file = extract_comment_from_line_list(lines_in_file, language)
         write_comment_file(comments_in_file, comment_dir)
+        line_counter += len(comments_in_file)
 
     # comments = extract_comment_from_line_list(lines, language)
 
@@ -113,7 +130,7 @@ def searchFile(fileName: str, path: str) -> List[T]:
     fileName -- name of the file to search for
     path -- path from which to search the file
     """
-    print("Searching in path: " + path + " for " + fileName)
+    # print("Searching in path: " + path + " for " + fileName)
     res = []
     for root, dirs, files in os.walk(path):
         if fileName[0] == wildcard_identifier:
@@ -140,7 +157,7 @@ def checkFileSameFormat(fileOne: str, fileTwo:str) -> bool:
     fileTwo -- the second file in the comparison
     """
     counter = 1
-    while fileOne[-counter] != "." and fileTwo[-counter] != "." and counter <= min(len(fileOne), len(fileTwo)):
+    while fileOne[-counter] != "." and fileTwo[-counter] != "." and counter < min(len(fileOne), len(fileTwo)):
         if fileOne[-counter] != fileTwo[-counter]:
             return False
         counter += 1
@@ -221,6 +238,7 @@ def create_comment_file(target: str) -> str:
     while True:
         filename = "commentfile" + str(counter) + ".csv"
         if len(searchFile(filename, ".")) == 0:
+            print("creating new comment file " + filename)
             res = target + "/" + filename
             f = open(res, "a")
             f.write("")
@@ -241,10 +259,9 @@ def write_comment_file(lines_of_comment: List[T], target: str):
 
 # write_comment_file(['a', 'b'], "./comment_csv_files")
 
+extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', perl_comment, "./comment_csv_files/linux_kernal_perl")
 
-# extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment)
-
-extracted_comments = extract_comment_from_path('./test-folder', c_comment)
+# extracted_comments = extract_comment_from_path('./test-folder', c_comment)
 # print(extracted_comments)
 
 # extracted_comments = extract_comment_from_path('./test-folder', python_comment)
