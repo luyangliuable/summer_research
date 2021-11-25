@@ -242,9 +242,9 @@ def write_comment_file(lines_of_comment: List[T], target: str):
 # write_comment_file(['a', 'b'], "./comment_csv_files")
 
 
-extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment)
+# extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment)
 
-# extracted_comments = extract_comment_from_path('./test-folder', c_comment)
+extracted_comments = extract_comment_from_path('./test-folder', c_comment)
 # print(extracted_comments)
 
 # extracted_comments = extract_comment_from_path('./test-folder', python_comment)
