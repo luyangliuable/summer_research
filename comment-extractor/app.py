@@ -6,6 +6,11 @@ T = TypeVar("T")
 
 wildcard_identifier = '*'
 
+def get_every_line_from_file(file: str) -> List[T]:
+    file = open(file, 'r')
+    lines = file.readlines()
+    return lines
+
 def extract_comment_from_path(directory: str, language: str) -> List[T]:
     """Extracts all comments from file contained inside a path
 
@@ -17,6 +22,7 @@ def extract_comment_from_path(directory: str, language: str) -> List[T]:
     language -- the programming language to search in
     """
     files = []
+
     if language == 'python':
         files = files + searchFile('*.py', directory)
     elif language == 'c':
@@ -46,12 +52,22 @@ def extract_comment_from_line_list(lines: List[T], language: str) -> List[T]:
 
     for line in lines:
         if language == 'python':
-            if "\"\"\"" in line:
-                multiline_comment = True
-                comment = find_text_enclosed_inside(line, "\"\"\"")
-            comment = find_text_enclosed_inside(line, "#")
+            if check_triggers_multiline_comment(line, '"""'):
+                multiline_comment = not multiline_comment
+
+            if multiline_comment:
+                comment = line
+            else:
+                comment = find_text_enclosed_inside(line, "#")
+
         elif language == 'c':
-            comment = find_text_enclosed_inside(line, '//')
+            if check_triggers_multiline_comment(line, "/*"):
+                multiline_comment = not multiline_comment
+
+            if multiline_comment:
+                comment = line
+            else:
+                comment = find_text_enclosed_inside(line, '//')
 
         if comment:
             res.append(comment)
@@ -95,6 +111,13 @@ def checkFileSameFormat(fileOne: str, fileTwo:str) -> bool:
     return True
 
 def check_triggers_multiline_comment(line:str, multiline_sexp: str) -> bool:
+    """checks if a particular line triggers the start of a multi-line comment
+
+    Keyword Arguments:
+    line -- the line to examine
+    multiline_sexp -- the sexp that dictates the start of multi-line comment
+    """
+
     triggers_multiline = False
     multiline_sexp_length = len(multiline_sexp)
     res = ""
@@ -143,12 +166,8 @@ def find_text_enclosed_inside(line: str, sexp: str) -> str:
             pass
     return res
 
-def get_every_line_from_file(file: str) -> List[T]:
-    file = open(file, 'r')
-    lines = file.readlines()
-    return lines
 
-extracted_comments = extract_comment_from_path('./test-folder', 'python')
+extracted_comments = extract_comment_from_path('./test-folder', 'c')
 print(check_triggers_multiline_comment('"""ssdsad', '"""'))
 print(extracted_comments)
 
