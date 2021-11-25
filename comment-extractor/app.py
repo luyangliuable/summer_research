@@ -2,7 +2,6 @@ import os
 from comment_parser import comment_parser
 from typing import TypeVar, Generic, List, NewType
 
-
 T = TypeVar("T")
 
 wildcard_identifier = '*'
@@ -69,11 +68,17 @@ def extract_comment_from_path(directory: str, language: dict):
     elif language is c_comment:
         files = files + searchFile('*.c', directory)
 
+    line_counter = 0;
+    max_line_per_file = 50000
     for file in files:
+        if line_counter > max_line_per_file:
+            comment_dir = create_comment_file("./comment_csv_files")
+            line_counter = 0
         # print("extracting comment from: " + file)
         lines_in_file = get_every_line_from_file(file)
         comments_in_file = extract_comment_from_line_list(lines_in_file, language)
         write_comment_file(comments_in_file, comment_dir)
+        line_counter += len(comments_in_file)
 
     # comments = extract_comment_from_line_list(lines, language)
 
@@ -113,7 +118,7 @@ def searchFile(fileName: str, path: str) -> List[T]:
     fileName -- name of the file to search for
     path -- path from which to search the file
     """
-    print("Searching in path: " + path + " for " + fileName)
+    # print("Searching in path: " + path + " for " + fileName)
     res = []
     for root, dirs, files in os.walk(path):
         if fileName[0] == wildcard_identifier:
@@ -221,6 +226,7 @@ def create_comment_file(target: str) -> str:
     while True:
         filename = "commentfile" + str(counter) + ".csv"
         if len(searchFile(filename, ".")) == 0:
+            print("creating new comment file " + filename)
             res = target + "/" + filename
             f = open(res, "a")
             f.write("")
@@ -242,9 +248,9 @@ def write_comment_file(lines_of_comment: List[T], target: str):
 # write_comment_file(['a', 'b'], "./comment_csv_files")
 
 
-# extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment)
+extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment)
 
-extracted_comments = extract_comment_from_path('./test-folder', c_comment)
+# extracted_comments = extract_comment_from_path('./test-folder', c_comment)
 # print(extracted_comments)
 
 # extracted_comments = extract_comment_from_path('./test-folder', python_comment)
