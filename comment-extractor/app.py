@@ -51,7 +51,7 @@ def get_every_line_from_file(file: str) -> List[T]:
     lines = file.readlines()
     return lines
 
-def extract_comment_from_path(directory: str, language: dict) -> List[T]:
+def extract_comment_from_path(directory: str, language: dict):
     """Extracts all comments from file contained inside a path
 
     Keyword Arguments:
@@ -62,23 +62,21 @@ def extract_comment_from_path(directory: str, language: dict) -> List[T]:
     language -- the programming language to search in
     """
     files = []
+    comment_dir = create_comment_file("./comment_csv_files")
 
     if language is python_comment:
         files = files + searchFile('*.py', directory)
     elif language is c_comment:
         files = files + searchFile('*.c', directory)
 
-    lines = []
     for file in files:
-        print("extracting comment from: " + file)
-        lines = lines + get_every_line_from_file(file)
+        # print("extracting comment from: " + file)
+        lines_in_file = get_every_line_from_file(file)
+        comments_in_file = extract_comment_from_line_list(lines_in_file, language)
+        write_comment_file(comments_in_file, comment_dir)
 
-    comments = extract_comment_from_line_list(lines, language)
+    # comments = extract_comment_from_line_list(lines, language)
 
-
-    write_comment_file(comments, "./comment_csv_files")
-
-    return comments
 
 
 def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
@@ -217,24 +215,34 @@ def find_text_enclosed_inside(line: str, sexp: List[str]) -> str:
 
     return res
 
-def write_comment_file(lines_of_comment: List[T], target: str):
+def create_comment_file(target: str) -> str:
     counter = 0
+    res = ""
     while True:
         filename = "commentfile" + str(counter) + ".csv"
-        print(searchFile(filename, "target"))
         if len(searchFile(filename, ".")) == 0:
-            f = open(target + "/" + filename, "a")
-            for line in lines_of_comment:
-                f.write(line + "\n")
+            res = target + "/" + filename
+            f = open(res, "a")
+            f.write("")
             f.close()
             break
         counter += 1
 
+    return res
+
+def write_comment_file(lines_of_comment: List[T], target: str):
+        f = open(target, "a")
+        for line in lines_of_comment:
+            f.write(line + "\n")
+        f.close()
+
+# file = create_comment_file("./comment_csv_files")
+# write_comment_file(["a", "basdads"], file)
 
 # write_comment_file(['a', 'b'], "./comment_csv_files")
 
 
-extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', python_comment)
+extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment)
 
 # extracted_comments = extract_comment_from_path('./test-folder', c_comment)
 # print(extracted_comments)
