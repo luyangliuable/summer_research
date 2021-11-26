@@ -17,8 +17,25 @@ Luyang - Faculty of IT, Monash university
 AI research project from uni
 
 
+## Architectural proposal
+
+## Frontend
+* HTML, CSS
+* React.JS
+
+## Backend
+* Django
+* PostgreSQL database
+* host on Heroku
+* use docker?
+
 ## Roadmap
 **Week 1:** Extract comments from linux kernal, mozilla and android repo, create architectural recommendations and roadmap plan <br />
 **Week 2:** Label comments based on their human value using schwartz human values model<br />
-**Week 3:** onwards; train ai model and rule generator similar to c-comment<br />
-**Week 7:** front-end and app development<br />
+**Week 3:** Create rule generator framework
+**Week 4:** train ai model and rule generator similar to c-comment<br />
+**Week 5:** train ai model and rule generator similar to c-comment<br />
+**Week 6:** Testing ai model
+**Week 8:** Improving ai model accuracy
+**Week 9:** front-end and app development<br />
+
