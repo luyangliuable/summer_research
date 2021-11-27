@@ -90,7 +90,6 @@ def extract_comment_from_path(directory: str, language: dict, output_dir: str):
         lines_in_file = get_every_line_from_file(file)
         comments_in_file = extract_comment_from_line_list(lines_in_file, language)
         comments_in_file = [strip_comment_of_symbols(comment, language) for comment in comments_in_file]
-        print(comments_in_file)
         write_comment_file(comments_in_file, comment_dir)
         line_counter += len(comments_in_file)
 
@@ -280,12 +279,10 @@ def write_comment_file(lines_of_comment: List[T], target: str):
 
 # write_comment_file(['a', 'b'], "./comment_csv_files")
 
-# extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', perl_comment, "./comment_csv_files/linux_kernal_perl")
+extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment, "./comment_csv_files/linux_kernal_c2")
 
-a = extract_comment_from_line_list(['asdasd', '/* asdasd', "/* ", "*"], c_comment)
-print(a)
-extracted_comments = extract_comment_from_path('./test-folder', c_comment, "./")
-print(extracted_comments)
+# a = extract_comment_from_line_list(['asdasd', '/* asdasd', "/* ", "*"], c_comment)
+# extracted_comments = extract_comment_from_path('./test-folder', c_comment, "./")
 
 # extracted_comments = extract_comment_from_path('./test-folder', python_comment)
 
