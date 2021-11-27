@@ -51,8 +51,13 @@ perl_comment = {
 }
 
 def get_every_line_from_file(file: str) -> List[T]:
-    file = open(file, 'r')
-    lines = file.readlines()
+    thefile = open(file, 'r')
+    lines = thefile.readlines()
+    for line_number in range(len(lines)):
+        lines[line_number] = {
+            'line': lines[line_number],
+            'location': file + ": " + str(line_number+1)
+        }
     return lines
 
 def extract_comment_from_path(directory: str, language: dict, output_dir: str):
@@ -89,12 +94,10 @@ def extract_comment_from_path(directory: str, language: dict, output_dir: str):
         # print("extracting comment from: " + file)
         lines_in_file = get_every_line_from_file(file)
         comments_in_file = extract_comment_from_line_list(lines_in_file, language)
-        comments_in_file = [strip_comment_of_symbols(comment, language) for comment in comments_in_file]
+        comments = [{'line': strip_comment_of_symbols(comment['line'], language), 'location': comment['location']} for comment in comments_in_file]
+        print(comments)
         write_comment_file(comments_in_file, comment_dir)
         line_counter += len(comments_in_file)
-
-    # comments = extract_comment_from_line_list(lines, language)
-
 
 
 def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
@@ -102,22 +105,24 @@ def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
 
     Keyword Arguments:
 
-    lines -- list of lines to extract the comment from
+    lines -- list of lines to extract the comment from. It contains the line as well as the file location
     languages -- the language the lines are written in
     """
 
     multiline_comment = False
-
     res = []
 
     for line in lines:
-        if check_triggers_multiline_comment(line, language["multiline_start"], language["multiline_end"]):
+        if check_triggers_multiline_comment(line['line'], language["multiline_start"], language["multiline_end"]):
             multiline_comment = not multiline_comment
 
-        if multiline_comment and not check_if_comment_is_empty(line, language):
+        if multiline_comment and not check_if_comment_is_empty(line['line'], language):
             comment = line
         else:
-            comment = find_text_enclosed_inside(line, language["single_line"])
+            comment = {
+                'line': find_text_enclosed_inside(line['line'], language["single_line"]),
+                'location': line['location']
+            }
 
         if comment and not check_if_comment_is_empty(comment, language):
             res.append(comment)
@@ -251,6 +256,7 @@ def create_comment_file(target: str) -> str:
 
 def strip_comment_of_symbols(comment: str, language: dict) -> str:
     res = ""
+    print(comment)
     comment = comment.strip("\n")
     for char in comment:
         if not char in language["multiline_start"] or not char in language["multiline_end"]:
@@ -261,6 +267,7 @@ def strip_comment_of_symbols(comment: str, language: dict) -> str:
     return res
 
 def check_if_comment_is_empty(comment: str, language: dict) -> bool:
+    comment = comment['line']
     comment = strip_comment_of_symbols(comment, language)
     comment = comment.strip(" ")
     if comment == "":
@@ -269,8 +276,10 @@ def check_if_comment_is_empty(comment: str, language: dict) -> bool:
 
 def write_comment_file(lines_of_comment: List[T], target: str):
         f = open(target, "a")
-        for line in lines_of_comment:
-            f.write(line + "\n")
+        for comment in lines_of_comment:
+            comment_text = comment['line']
+            filepath = comment['location']
+            f.write(comment_text + " " + filepath + '\n')
         f.close()
 
 
@@ -279,14 +288,17 @@ def write_comment_file(lines_of_comment: List[T], target: str):
 
 # write_comment_file(['a', 'b'], "./comment_csv_files")
 
-extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment, "./comment_csv_files/linux_kernal_c2")
+# extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment, "./comment_csv_files/linux_kernal_c2")
 
 # a = extract_comment_from_line_list(['asdasd', '/* asdasd', "/* ", "*"], c_comment)
 # extracted_comments = extract_comment_from_path('./test-folder', c_comment, "./")
 
-# extracted_comments = extract_comment_from_path('./test-folder', python_comment)
+# extracted_comments = extract_comment_from_path('./test-folder', c_comment, "./")
+# print(extracted_comments)
 
-# comments = extract_comment_from_line([ './test-folder/a.py' ], 'python')
+extracted_comments = extract_comment_from_path('./test-folder', python_comment, './')
+
+# comments = extract_comment_from_line([ './test-folder' ], 'python')
 # print(comments)
 
 # loc = get_every_line_from_file('app.py')[
