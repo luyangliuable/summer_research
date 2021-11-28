@@ -1,0 +1,12 @@
+test_check_file_is_same_format (__main__.test_app) ... ok
+test_check_if_comment_is_empty_multi_line (__main__.test_app) ... ok
+test_check_if_comment_is_empty_single_line (__main__.test_app) ... ok
+test_find_text_enclosed_inside (__main__.test_app) ... ok
+test_get_every_line_from_file (__main__.test_app) ... ok
+test_remove_starting_whitespace (__main__.test_app) ... ok
+test_strip_comment_of_symbols (__main__.test_app) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK

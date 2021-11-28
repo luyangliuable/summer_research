@@ -1,0 +1,120 @@
+Store designated "clear GRF" value , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 14
+Loop count to delay kernel: Init to (g1.2 + 1) , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 39
+g3 has HSID , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 50
+g3.1 has sliceID , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 52
+g3 = sliceID  SubSlicePerSliceCount + HSID , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 54
+g3.2 = EUID , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 56
+g3.2 now points to EU row number (Y-pixel = V address )  in instrumentation surf , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 58
+Initialize message header with g0 , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 64
+Block offset , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 65
+Block offset , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 66
+Block size (1 row x 4 bytes) , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 67
+Media block read to fetch current value at specified location in instrumentation buffer , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 70
+Media block write for updated value at specified location in instrumentation buffer , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 76
+Delay thread for specified parameter , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 80
+Store designated "clear GRF" value , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 84
+Initialize looping parameters , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 87
+Initialize a0.0:w=0 , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 88
+Loop count. Each loop contains 16 GRF's , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 89
+Write 32x16 all "0" block , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 91
+Block size (16x16) , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 95
+Now, clear all GRF registers , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 111
+Terminante the thread , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/hsw.asm: 117
+Store designated "clear GRF" value , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 14
+Loop count to delay kernel: Init to (g1.2 + 1) , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 39
+g3 has HSID , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 50
+g3.1 has sliceID , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 52
+g3 = sliceID  SubSlicePerSliceCount + HSID , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 54
+g3.2 = EUID , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 56
+g3.2 now points to EU row number (Y-pixel = V address )  in instrumentation surf , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 58
+Initialize message header with g0 , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 64
+Block offset , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 65
+Block offset , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 66
+Block size (1 row x 4 bytes) , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 67
+Media block read to fetch current value at specified location in instrumentation buffer , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 70
+Media block write for updated value at specified location in instrumentation buffer , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 75
+Delay thread for specified parameter , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 78
+Store designated "clear GRF" value , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 82
+Initialize looping parameters , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 85
+Initialize a0.0:w=0 , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 86
+Loop count. Each loop contains 16 GRF's , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 87
+Write 32x16 all "0" block , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 89
+Block size (16x16) , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 93
+Now, clear all GRF registers , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 109
+Terminante the thread , /home/luyang/Documents/linux/drivers/gpu/drm/i915/gt/shaders/clear_kernel/ivb.asm: 115
+inform SPI the readiness and wait for SPI's go signal , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 290
+setup Resource Contants , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 323
+global mem offset , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 338
+save first 4 VGPRs, needed for SGPR save , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 348
+save HW registers , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 380
+save SGPRs , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 426
+save LDS , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 490
+save VGPRs  - set the Rest VGPRs , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 574
+Setup Resource Contants , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 671
+restore LDS , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 689
+restore VGPRs , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 739
+VGPR restore on v0 , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 784
+VGPR restore on v0 , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 836
+restore SGPRs , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 844
+restore HW registers , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 902
+sgpr_idx < 16, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 1008
+sgpr_idx < 12, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx10.asm: 1025
+variables                                         , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 28
+Save        , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 68
+Restore     , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 106
+trap handler entry points                         , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 148
+Shader Main, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 150
+read tba and tma for next level trap handler, ttmp4 is used as s_save_status , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 172
+save routine                                      , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 194
+inform SPI the readiness and wait for SPI's go signal , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 214
+setup Resource Contants    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 230
+global mem offset           , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 246
+save HW registers   , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 252
+the first wave in the threadgroup    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 288
+save SGPRs      , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 296
+save first 4 VGPR, then LDS save could use   , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 340
+save LDS        , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 359
+save VGPRs  - set the Rest VGPRs        , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 419
+restore routine                                   , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 467
+Setup Resource Contants    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 471
+global mem offset           , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 484
+the first wave in the threadgroup    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 487
+restore LDS     , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 491
+restore VGPRs       , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 525
+VGPR restore on v0 , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 561
+restore SGPRs       , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 568
+restore HW registers    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 608
+the END                                           , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 673
+the helper functions                              , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx8.asm: 682
+			variables					  , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 47
+	Save	    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 101
+	Restore	    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 139
+			trap handler entry points			  , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 185
+Shader Main, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 187
+			save routine					  , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 306
+	    inform SPI the readiness and wait for SPI's go signal , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 326
+	    setup Resource Contants    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 357
+	    global mem offset		, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 373
+	    save HW registers	, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 379
+	    the first wave in the threadgroup	 , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 413
+		save SGPRs	, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 419
+		save first 4 VGPR, then LDS save could use   , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 466
+		save LDS	, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 493
+		save VGPRs  - set the Rest VGPRs	, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 575
+vgpr < 4, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 648
+vgpr < 4, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 663
+			restore routine					  , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 683
+	    Setup Resource Contants    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 687
+	    global mem offset		, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 700
+	    the first wave in the threadgroup	 , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 703
+		restore LDS	, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 707
+		restore VGPRs	    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 741
+vgpr < 4, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 786
+		restore SGPRs	    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 802
+	    restore HW registers    , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 840
+			the END						  , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 918
+			the helper functions				  , /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 927
+lane < 4, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 997
+vgpr < n_vgprs, /home/luyang/Documents/linux/drivers/gpu/drm/amd/amdkfd/cwsr_trap_handler_gfx9.asm: 1011
+then, /home/luyang/Documents/linux/scripts/dummy-tools/nm: 17
+then, /home/luyang/Documents/linux/scripts/dummy-tools/nm: 26
