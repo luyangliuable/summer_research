@@ -48,6 +48,15 @@ class test_app(unittest.TestCase):
         test_case = app.get_every_line_from_file('./test-folder/a.py')
         self.assertEqual(test_case[0]["line"], '"""multi line comment"""')
 
+    def test_strip_comment_of_symbols(self):
+        test_case = app.strip_comment_of_symbols('/* adasd', app.c_comment)
+        self.assertEqual(test_case, ' adasd')
+
+    def test_remove_starting_whitespace(self):
+        test_case = app.remove_starting_whitespace("   test")
+        self.assertEqual(test_case, "test")
+
+
 def main():
     # Create a test suit
     suit = unittest.TestLoader().loadTestsFromTestCase(test_app)

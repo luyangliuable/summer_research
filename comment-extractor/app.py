@@ -94,13 +94,21 @@ def extract_comment_from_path(directory: str, language: dict, output_dir: str):
         # print("extracting comment from: " + file)
         lines_in_file = get_every_line_from_file(file)
         comments_in_file = extract_comment_from_line_list(lines_in_file, language)
+
         comments = [{'line': strip_comment_of_symbols(comment['line'], language), 'location': comment['location']} for comment in comments_in_file]
-        write_comment_file(comments_in_file, comment_dir)
-        line_counter += len(comments_in_file)
+
+        comments = [{'line': remove_starting_whitespace(comment['line']), 'location': comment['location']} for comment in comments]
+        comments = [{'line': remove_starting_whitespace(comment['line']), 'location': comment['location']} for comment in comments]
+
+        write_comment_file(comments, comment_dir)
+        line_counter += len(comments)
 
 
 def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
     """extracts the comment from a list of lines
+
+    if is a multiline comment, accumulate the multiline comment and return as a single line
+    if is a single line comment, return as a single line
 
     Keyword Arguments:
 
@@ -110,27 +118,69 @@ def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
 
     multiline_comment = False
     res = []
+    multiline_comment = False
 
     for line in lines:
+        single_multiline_comment = ""
+        comment = ""
         if check_triggers_multiline_comment(line['line'], language["multiline_start"], language["multiline_end"]):
-            multiline_comment = not multiline_comment
+            if multiline_comment is False:
+                multiline_comment = True
+            else:
+                comment = single_multiline_comment
+                multiline_comment = False
 
-        if multiline_comment and not check_if_comment_is_empty(line, language):
-            comment = {
-                'line': line['line'],
-                'location': line['location']
-            }
-        else:
+        if multiline_comment:
+            single_multiline_comment += line['line']
+        elif comment == "":
             comment = {
                 'line': find_text_enclosed_inside(line['line'], language["single_line"]),
                 'location': line['location']
             }
+
 
         if comment and not check_if_comment_is_empty(comment, language):
             assert comment.__class__ is dict, "class of comment must be stored in dictionary"
             res.append(comment)
             # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
     return res;
+
+
+    # for line in lines:
+    #     comment = None
+    #     if check_triggers_multiline_comment(line['line'], language["multiline_start"], language["multiline_end"]):
+    #         if multiline_comment:
+    #             comment = {
+    #                 'line': single_multiline_comment,
+    #                 'location': line['location']
+    #             }
+    #             single_multiline_comment = ""
+    #             multiline_comment = False
+    #         else:
+    #             multiline_comment = True
+
+
+
+    #     if multiline_comment and not check_if_comment_is_empty(line, language):
+    #         single_multiline_comment += line['line']
+    #     elif not comment:
+    #         comment = {
+    #             'line': find_text_enclosed_inside(line['line'], language["single_line"]),
+    #             'location': line['location']
+    #         }
+
+    #     if single_multiline_comment != "" and multiline_comment:
+    #         assert comment is None, "single line and multiline comment must not coexist" + str(comment)
+    #         comment = {
+    #             'line': single_multiline_comment,
+    #             'location': line['location']
+    #         }
+
+    #     if comment and not check_if_comment_is_empty(comment, language):
+    #         assert comment.__class__ is dict, "class of comment must be stored in dictionary"
+    #         res.append(comment)
+    #         # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
+    # return res;
 
 def searchFile(fileName: str, path: str) -> List[T]:
     """Search a root directory for a particular file
@@ -243,15 +293,26 @@ def find_text_enclosed_inside(line: str, sexp: List[str]) -> str:
 
 def create_comment_file(target: str) -> str:
     counter = 0
+    first_row = ['comment', 'location']
     res = ""
+
     while True:
         filename = "commentfile" + str(counter) + ".csv"
         if len(searchFile(filename, ".")) == 0:
             print("creating new comment file " + filename)
             res = target + "/" + filename
             f = open(res, "a")
-            f.write("")
-            f.close()
+
+            content_to_add_to_file = ""
+            for column in range(len(first_row)):
+                content = first_row[column]
+                if (column != len(first_row)):
+                    content_to_add_to_file += content + ", "
+                else:
+                    content_to_add_to_file += content
+                    f.write(content_to_add_to_file)
+                    f.write("\n")
+                    f.close()
             break
         counter += 1
 
@@ -261,10 +322,21 @@ def strip_comment_of_symbols(comment: str, language: dict) -> str:
     res = ""
     comment = comment.strip("\n")
     for char in comment:
-        if not char in language["multiline_start"] or not char in language["multiline_end"]:
-            res = res + char;
+            if not char in language["multiline_start"] or not char in language["multiline_end"]:
+                res = res + char;
 
-    # comment = comment.lstrip(" ")
+    return res
+
+def remove_starting_whitespace(comment: str) -> str:
+    trailing_whitespace = True
+    res = ""
+
+    for char in comment:
+        if char != " ":
+            trailing_whitespace = False
+
+        if not trailing_whitespace:
+            res += char
 
     return res
 
@@ -275,27 +347,26 @@ def check_if_comment_is_empty(comment: dict, language: dict) -> bool:
     comment = strip_comment_of_symbols(comment, language)
     for symbol in language["single_line"]:
         comment = comment.strip(symbol)
-    comment = comment.strip(" ")
+        comment = comment.strip(" ")
     if comment == "" or comment == "\n":
         return True
     return False
 
 def write_comment_file(lines_of_comment: List[T], target: str):
-        f = open(target, "a")
-        for comment in lines_of_comment:
-            comment_text = comment['line']
-            filepath = comment['location']
-            f.write(comment_text + " " + filepath + '\n')
-        f.close()
+    f = open(target, "a")
+    for comment in lines_of_comment:
+        comment_text = comment['line']
+        filepath = comment['location']
+        f.write(comment_text + ", " + filepath + '\n')
+    f.close()
 
-print(check_if_comment_is_empty({'line': "#"}, python_comment))
 
 # file = create_comment_file("./comment_csv_files")
 # write_comment_file(["a", "basdads"], file)
 
 # write_comment_file(['a', 'b'], "./comment_csv_files")
 
-extracted_comments = extract_comment_from_path('/Users/rubber/linux/', c_comment, "./comment_csv_files/linux_kernal_c2")
+extracted_comments = extract_comment_from_path('/Users/rubber/linux/', c_comment, "./comment_csv_files/linux_kernal_c3")
 # a = extract_comment_from_line_list(['asdasd', '/* asdasd', "/* ", "*"], c_comment)
 # extracted_comments = extract_comment_from_path('./test-folder', c_comment, "./")
 
