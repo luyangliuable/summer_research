@@ -6,6 +6,9 @@
 - [value centred programming and summer research](#value-centred-programming-and-summer-research)
     - [Members](#members)
     - [About](#about)
+    - [Architectural proposal](#architectural-proposal)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
     - [Roadmap](#roadmap)
 
 <!-- markdown-toc end -->
@@ -16,7 +19,7 @@ Luyang - Faculty of IT, Monash university
 ## About
 AI research project from uni
 
-[google document][https://docs.google.com/document/d/1cz_LxWyqS6k3hjjeRV17ys2JllzPxAeqDv5bEUmCilU/edit#]
+[google document](https://docs.google.com/document/d/1cz_LxWyqS6k3hjjeRV17ys2JllzPxAeqDv5bEUmCilU/edit#)
 
 
 ## Architectural proposal
