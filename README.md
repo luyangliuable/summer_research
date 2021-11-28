@@ -16,6 +16,8 @@ Luyang - Faculty of IT, Monash university
 ## About
 AI research project from uni
 
+[google document][https://docs.google.com/document/d/1cz_LxWyqS6k3hjjeRV17ys2JllzPxAeqDv5bEUmCilU/edit#]
+
 
 ## Architectural proposal
 
