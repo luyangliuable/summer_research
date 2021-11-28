@@ -55,7 +55,7 @@ def get_every_line_from_file(file: str) -> List[T]:
     lines = thefile.readlines()
     for line_number in range(len(lines)):
         lines[line_number] = {
-            'line': lines[line_number],
+            'line': lines[line_number].strip('\n'),
             'location': file + ": " + str(line_number+1)
         }
     return lines
@@ -95,7 +95,6 @@ def extract_comment_from_path(directory: str, language: dict, output_dir: str):
         lines_in_file = get_every_line_from_file(file)
         comments_in_file = extract_comment_from_line_list(lines_in_file, language)
         comments = [{'line': strip_comment_of_symbols(comment['line'], language), 'location': comment['location']} for comment in comments_in_file]
-        print(comments)
         write_comment_file(comments_in_file, comment_dir)
         line_counter += len(comments_in_file)
 
@@ -116,8 +115,11 @@ def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
         if check_triggers_multiline_comment(line['line'], language["multiline_start"], language["multiline_end"]):
             multiline_comment = not multiline_comment
 
-        if multiline_comment and not check_if_comment_is_empty(line['line'], language):
-            comment = line
+        if multiline_comment and not check_if_comment_is_empty(line, language):
+            comment = {
+                'line': line['line'],
+                'location': line['location']
+            }
         else:
             comment = {
                 'line': find_text_enclosed_inside(line['line'], language["single_line"]),
@@ -125,6 +127,7 @@ def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
             }
 
         if comment and not check_if_comment_is_empty(comment, language):
+            assert comment.__class__ is dict, "class of comment must be stored in dictionary"
             res.append(comment)
             # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
     return res;
@@ -141,7 +144,7 @@ def searchFile(fileName: str, path: str) -> List[T]:
     for root, dirs, files in os.walk(path):
         if fileName[0] == wildcard_identifier:
             for file in files:
-                sameFormat = checkFileSameFormat(fileName, file)
+                sameFormat = check_file_is_same_format(fileName, file)
                 if sameFormat:
                     res.append(root + "/" + file)
         else:
@@ -155,7 +158,7 @@ def searchFile(fileName: str, path: str) -> List[T]:
                 break
     return res
 
-def checkFileSameFormat(fileOne: str, fileTwo:str) -> bool:
+def check_file_is_same_format(fileOne: str, fileTwo:str) -> bool:
     """Checks if file1 and file2 are of the same format
 
     Keyword Arguments:
@@ -256,7 +259,6 @@ def create_comment_file(target: str) -> str:
 
 def strip_comment_of_symbols(comment: str, language: dict) -> str:
     res = ""
-    print(comment)
     comment = comment.strip("\n")
     for char in comment:
         if not char in language["multiline_start"] or not char in language["multiline_end"]:
@@ -266,11 +268,15 @@ def strip_comment_of_symbols(comment: str, language: dict) -> str:
 
     return res
 
-def check_if_comment_is_empty(comment: str, language: dict) -> bool:
+def check_if_comment_is_empty(comment: dict, language: dict) -> bool:
+    assert comment.__class__ is dict, "class of comment must be stored in dictionary"
     comment = comment['line']
+    assert comment.__class__ is str, "comment must be in string form to be processed: " + str(comment)
     comment = strip_comment_of_symbols(comment, language)
+    for symbol in language["single_line"]:
+        comment = comment.strip(symbol)
     comment = comment.strip(" ")
-    if comment == "":
+    if comment == "" or comment == "\n":
         return True
     return False
 
@@ -282,21 +288,21 @@ def write_comment_file(lines_of_comment: List[T], target: str):
             f.write(comment_text + " " + filepath + '\n')
         f.close()
 
+print(check_if_comment_is_empty({'line': "#"}, python_comment))
 
 # file = create_comment_file("./comment_csv_files")
 # write_comment_file(["a", "basdads"], file)
 
 # write_comment_file(['a', 'b'], "./comment_csv_files")
 
-# extracted_comments = extract_comment_from_path('/home/luyang/Documents/linux', c_comment, "./comment_csv_files/linux_kernal_c2")
-
+extracted_comments = extract_comment_from_path('/Users/rubber/linux/', c_comment, "./comment_csv_files/linux_kernal_c2")
 # a = extract_comment_from_line_list(['asdasd', '/* asdasd', "/* ", "*"], c_comment)
 # extracted_comments = extract_comment_from_path('./test-folder', c_comment, "./")
 
 # extracted_comments = extract_comment_from_path('./test-folder', c_comment, "./")
 # print(extracted_comments)
 
-extracted_comments = extract_comment_from_path('./test-folder', python_comment, './')
+# extracted_comments = extract_comment_from_path('./test-folder', python_comment, './')
 
 # comments = extract_comment_from_line([ './test-folder' ], 'python')
 # print(comments)
@@ -311,7 +317,7 @@ extracted_comments = extract_comment_from_path('./test-folder', python_comment, 
 # print("comment is: " + comment)
 
 # f = open("script.py", "r")
-# print(checkFileSameFormat("a.py", "b.py"))
+# print(check_file_is_same_format("a.py", "b.py"))
 # found_files = searchFile('*.py', '.')
 # print(found_files)
 
