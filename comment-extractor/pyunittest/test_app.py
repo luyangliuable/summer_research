@@ -60,7 +60,9 @@ class test_app(unittest.TestCase):
     def test_extract_comment_from_line_list(self):
         line_list = [{'line': '"""', 'location': 'random' }, {'line': "line1", 'location': 'random'}, {'line': "line2", 'location': 'random'}, {'line': '"""', 'location': 'random'}, {'line': "line3", 'location': 'random'}]
         test_case = app.extract_comment_from_line_list(line_list, app.python_comment)
-        self.assertEqual(test_case[0]['line'], '"""line1line2')
+        test_case = app.strip_comment_of_symbols(test_case[0]['line'], app.python_comment)
+        test_case = app.remove_starting_whitespace(test_case)
+        self.assertEqual(test_case, 'line1 line2  ')
 
     # def test_test_extract_comment_from_multi_line(self):
     #     line_list = [{'line: ''}]
@@ -81,6 +83,37 @@ class test_app(unittest.TestCase):
         test2 = app.strip_comment_of_symbols(test_case[0]['line'], app.c_comment)
         test2 = app.remove_starting_whitespace(test2)
         self.assertEqual(test2, 'Main encode function ')
+
+
+    def test_extract_multiline_comment_from_c(self):
+        line_list= [
+            {"line":"/* Main encode function", "location": "random"},
+            {"line": "beep boop", "location": "random"},
+            {"line": "Initialize the state: */", "location": "random"},
+        ]
+
+        test_case = app.extract_comment_from_line_list(line_list, app.c_comment)
+        test2 = app.strip_comment_of_symbols(test_case[0]['line'], app.c_comment)
+        test2 = app.remove_starting_whitespace(test2)
+        self.assertEqual(test2, 'Main encode function beep boop Initialize the state:  ')
+
+
+    def test_check_trigger_multiline_comment_c(self):
+        test_case = app.check_triggers_multiline_comment('/*', app.c_comment['multiline_start'], app.c_comment['multiline_end'])
+        test_case2 = app.check_triggers_multiline_comment('*/', app.c_comment['multiline_start'], app.c_comment['multiline_end'])
+        test_case3 = app.check_triggers_multiline_comment('/* no */', app.c_comment['multiline_start'], app.c_comment['multiline_end'])
+        self.assertTrue(test_case)
+        self.assertTrue(test_case2)
+        self.assertFalse(test_case3)
+
+
+    def test_iterate_dictionary_for_header(self):
+        test_case = app.iterate_dictionary_for_header(app.languages)
+        self.assertEqual(['c', 'kotlin', 'c++', 'javascript', 'gradle', 'build', 'python', 'assembly', 'makefile', 'shell', 'perl', 'java'], test_case)
+
+    def test_save_to_dictionary(self):
+        test_case = app.save_in_dict('line', 'location', 'language')
+        self.assertTrue(test_case, {"line": 'line', "location": 'location', 'language': 'language'})
 
 def main():
     # Create a test suit
