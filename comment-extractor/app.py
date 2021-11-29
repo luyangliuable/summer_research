@@ -1,4 +1,5 @@
 import os
+import csv
 import chardet
 from comment_parser import comment_parser
 from typing import TypeVar, Generic, List, NewType
@@ -27,12 +28,21 @@ cpp_comment = {
 }
 
 
-javscript_comment = {
+javascript_comment = {
     "multiline_start": '/*',
     "multiline_end": '*/',
     "single_line": ['//', '/*'],
     "format": 'js'
 }
+
+
+gradle_comment = {
+    "multiline_start": '',
+    "multiline_end": '',
+    "single_line": ['//'],
+    "format": 'gradle'
+}
+
 
 java_comment = {
     "multiline_start": '/*',
@@ -423,7 +433,8 @@ def check_if_comment_is_empty(comment: dict, language: dict) -> bool:
     comment -- A dictionary containing the comment as well as the location the comment is from
     language -- The language the comment is written in
     """
-    assert comment.__class__ is dict, "class of comment must be stored in dictionary"
+    if comment.__class__ is dict:
+        Exception("class of comment must be stored in dictionary")
     comment = comment['line']
     assert comment.__class__ is str, "comment must be in string form to be processed: " + str(comment)
     comment = strip_comment_of_symbols(comment, language)
@@ -443,9 +454,13 @@ def write_comment_file(lines_of_comment: List[T], target: str):
     target -- the target directory
     """
 
+    fieldnames = ['line', 'location']
+
     f = open(target, "a")
-    for comment in lines_of_comment:
-        comment_text = comment['line']
-        filepath = comment['location']
-        f.write(comment_text + ", " + filepath + '\n')
+    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    writer.writeheader()
+    # for comment in lines_of_comment:
+    #     comment_text = comment['line']
+    #     filepath = comment['location']
+    writer.writerows(lines_of_comment)
     f.close()

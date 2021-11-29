@@ -62,6 +62,9 @@ class test_app(unittest.TestCase):
         test_case = app.extract_comment_from_line_list(line_list, app.python_comment)
         self.assertEqual(test_case[0]['line'], '"""line1line2')
 
+    def test_test_extract_comment_from_multi_line(self):
+        line_list = [{'line: ''}]
+
 def main():
     # Create a test suit
     suit = unittest.TestLoader().loadTestsFromTestCase(test_app)
