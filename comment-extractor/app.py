@@ -11,82 +11,116 @@ T = TypeVar("T")
 
 WILDCARD_IDENTIFIER = '*'
 
-c_comment = {
-    "multiline_start": '/*',
-    "multiline_end": '*/',
-    "single_line": ['//', '/*'],
-    "format": 'c',
-    "language": "c"
+languages = {
+    "c": {
+        "multiline_start": '/*',
+        "multiline_end": '*/',
+        "single_line": ['//', '/*'],
+        "format": 'c',
+        "language": "c"
+    },
+
+    'kotlin': {
+        "multiline_start": '/*',
+        "multiline_end": '*/',
+        "single_line": ['//', '/*'],
+        "format": 'kt',
+        "language": "kotlin"
+    },
+
+    "c++": {
+        "multiline_start": '/*',
+        "multiline_end": '*/',
+        "single_line": ['//', '/*'],
+        "format": 'cpp',
+        "language": "c++"
+    },
+
+    "javascript": {
+        "multiline_start": '/*',
+        "multiline_end": '*/',
+        "single_line": ['//', '/*'],
+        "format": 'js',
+        "language": "javascript"
+    },
+    "gradle": {
+        "multiline_start": '▓',
+        "multiline_end": '▓',
+        "single_line": ['//'],
+        "format": 'gradle',
+        "language": "gradle"
+    },
+    "build": {
+        "multiline_start": '',
+        "multiline_end": '',
+        "single_line": ['#'],
+        "format": 'build',
+        "language": "build"
+    },
+
+    "python": {
+        "multiline_start": '"""',
+        "multiline_end": '"""',
+        "single_line": ['#', '"""'],
+        "format": 'py',
+        "language": "python"
+    },
+
+    "assembly": {
+        "multiline_start": '/*',
+        "multiline_end": '*/',
+        "single_line": [';', '/*'],
+        "format": 'asm',
+        "language": "assembly"
+    },
+    "makefile": {
+        "multiline_start": '',
+        "multiline_end": '',
+        "single_line": ['#'],
+        "format": 'makefile',
+        "language": "makefile"
+    },
+    "shell": {
+        "multiline_start": '',
+        "multiline_end": '',
+        "single_line": ['#'],
+        "format": 'shell',
+        "language": "shell"
+    },
+    "perl": {
+        "multiline_start": '=',
+        "multiline_end": '=',
+        "single_line": ['#', '='],
+        "format": 'pl',
+        "language": "perl"
+    },
+    "java": {
+        "multiline_start": '/*',
+        "multiline_end": '*/',
+        "single_line": ['//', '/*'],
+        "format": 'java',
+        "language": "java"
+    }
+
 }
 
-kotlin_comment = {
-    "multiline_start": '/*',
-    "multiline_end": '*/',
-    "single_line": ['//', '/*'],
-    "format": 'kt',
-    "language": "kotlin"
-}
+c_comment = languages['c']
 
-cpp_comment = {
-    "multiline_start": '/*',
-    "multiline_end": '*/',
-    "single_line": ['//', '/*'],
-    "format": 'cpp',
-    "language": "c++"
-}
+kotlin_comment = languages['kotlin']
 
+cpp_comment = languages['c++']
 
-javascript_comment = {
-    "multiline_start": '/*',
-    "multiline_end": '*/',
-    "single_line": ['//', '/*'],
-    "format": 'js',
-    "language": "javascript"
-}
+javascript_comment = languages['javascript']
 
+gradle_comment = languages['gradle']
 
-gradle_comment = {
-    "multiline_start": '',
-    "multiline_end": '',
-    "single_line": ['//'],
-    "format": 'gradle',
-    "language": "gradle"
-}
+java_comment = languages['java']
 
+build_comment = languages['build']
 
-java_comment = {
-    "multiline_start": '/*',
-    "multiline_end": '*/',
-    "single_line": ['//', '/*'],
-    "format": 'java',
-    "language": "java"
-}
+python_comment = languages['python']
 
-build_comment = {
-    "multiline_start": '',
-    "multiline_end": '',
-    "single_line": ['#'],
-    "format": 'build',
-    "language": "build"
-}
-
-python_comment = {
-    "multiline_start": '"""',
-    "multiline_end": '"""',
-    "single_line": ['#', '"""'],
-    "format": 'py',
-    "language": "python"
-}
-
-asm_comment = {
-    "multiline_start": '/*',
-    "multiline_end": '*/',
-    "single_line": [';', '/*'],
-    "format": 'asm',
-    "language": "assembly"
-
-}
-
+asm_comment = languages['assembly']
 
 """ assume (no comment like this for makefile and shell):
 # This is the first line of a comment \
@@ -94,33 +128,53 @@ and this is still part of the comment \
 as is this, since I keep ending each line \
 with a backslash character
 """
-makefile_comment = {
-    "multiline_start": '',
-    "multiline_end": '',
-    "single_line": ['#'],
-    "format": 'makefile',
-    "language": "makefile"
-}
+makefile_comment = languages['makefile']
 
-shell_comment = {
-    "multiline_start": '',
-    "multiline_end": '',
-    "single_line": ['#'],
-    "format": 'sh',
-    "language": "shell"
-}
+shell_comment = languages['shell']
 
-perl_comment = {
-    "multiline_start": '=',
-    "multiline_end": '=',
-    "single_line": ['#', '='],
-    "format": 'pl',
-    "language": "perl"
-}
+perl_comment = languages['perl']
+
+def save_in_dict(line: str, location: str, language: str) -> dict:
+    return {'line': line, 'location': location, 'language': language}
+
+
+def iterate_dictionary_for_header(dictionary: dict) -> List[T]:
+    res = []
+    for key in dictionary:
+        res.append(key)
+
+    return res
+
+
+def auto_extract_comment_from_path(directory: str, language: dict, output_dir: str) -> None:
+    line_counter = 0
+
+    # The maximum line of code for each csv file ###############################
+    languages = iterate_dictionary_for_header(languages)
+    files = []
+    files = files + search_file('*' + language["format"], directory)
+    max_line_per_file = 50000
+    for file in files:
+        if line_counter > max_line_per_file:
+            comment_dir = create_comment_file(output_dir, language)
+            line_counter = 0
+
+        lines_in_file = get_every_line_from_file(file)
+        comments_in_file = extract_comment_from_line_list(lines_in_file, language)
+
+        # Strip comment of symbols ####################################################
+        comments = [save_in_dict(strip_comment_of_symbols(comment['line'], language), comment['location'], language['language']) for comment in comments_in_file]
+        # comments = [{'line': strip_comment_of_symbols(comment['line'], language), 'location': comment['location']} for comment in comments_in_file]
+
+        # Strip comment of starting whitespace ########################################
+        comments = [remove_starting_whitespace(comments[i]['line']) for i in range(len( comments ))]
+        # comments = [{'line': remove_starting_whitespace(comment['line']), 'location': comment['location']} for comment in comments]
+        # comments = [{'line': remove_starting_whitespace(comment['line']), 'location': comment['location']} for comment in comments]
+        write_comment_file(comments, comment_dir)
+        line_counter += len(comments)
 
 
 def get_every_line_from_file(filename: str) -> List[T]:
-
     ###############################################################################
     #                         getting encoding of the file                        #
     ###############################################################################
@@ -186,11 +240,12 @@ def extract_comment_from_path(directory: str, language: dict, output_dir: str):
         comments_in_file = extract_comment_from_line_list(lines_in_file, language)
 
         # Strip comment of symbols ####################################################
-        comments = [{'line': strip_comment_of_symbols(comment['line'], language), 'location': comment['location']} for comment in comments_in_file]
+        comments = [save_in_dict(strip_comment_of_symbols(comment['line'], language), comment['location'], language['language']) for comment in comments_in_file]
+        # comments = [{'line': strip_comment_of_symbols(comment['line'], language), 'location': comment['location']} for comment in comments_in_file]
 
         # Strip comment of starting whitespace ########################################
-        comments = [{'line': remove_starting_whitespace(comment['line']), 'location': comment['location']} for comment in comments]
-        # comments = [{'line': remove_starting_whitespace(comment['line']), 'location': comment['location']} for comment in comments]
+        # comments = [remove_starting_whitespace(comments[i]['line']) for i in range(len( comments ))]
+        comments = [save_in_dict(remove_starting_whitespace(comment['line']), comment['location'], language['language']) for comment in comments]
         write_comment_file(comments, comment_dir)
         line_counter += len(comments)
 
@@ -210,28 +265,6 @@ def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
     res = []
     multiline_comment = False
 
-    # for line in lines:
-    #     comment = ""
-    #     if check_triggers_multiline_comment(line['line'], language["multiline_start"], language["multiline_end"]):
-    #         multiline_comment = not multiline_comment
-
-    #     if multiline_comment:
-    #         comment = {
-    #             'line': line['line'],
-    #             'location': line['location']
-    #         }
-    #     elif comment == "":
-    #         comment = {
-    #             'line': find_text_enclosed_inside(line['line'], language["single_line"]),
-    #             'location': line['location']
-    #         }
-
-
-    #     if comment != "" and not check_if_comment_is_empty(comment, language):
-    #         assert comment.__class__ is dict, "class of comment must be stored in dictionary"
-    #         res.append(comment)
-    # return res;
-
     single_multiline_comment = ""
     for line in lines:
         comment = ""
@@ -239,21 +272,16 @@ def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
             if not multiline_comment:
                 multiline_comment = True
             else:
-                comment = {
-                    'line': single_multiline_comment,
-                    'location': line['location']
-                }
+                single_multiline_comment += line['line'] + " "
+                comment = save_in_dict(single_multiline_comment, line['location'], language['language'])
                 multiline_comment = False
 
         if multiline_comment:
-            single_multiline_comment += line['line'].strip("\n")
+            single_multiline_comment += line['line'].strip("\n") + " "
         elif comment == "":
-            comment = {
-                'line': find_text_enclosed_inside(line['line'], language["single_line"]),
-                'location': line['location']
-            }
+            comment = save_in_dict(find_text_enclosed_inside(line['line'], language["single_line"]), line['location'], language['language'])
 
-        if comment and not check_if_comment_is_empty(comment, language):
+        if comment != "" and not check_if_comment_is_empty(comment, language):
             assert comment.__class__ is dict, "class of comment must be stored in dictionary"
             res.append(comment)
             # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
@@ -364,9 +392,6 @@ def find_text_enclosed_inside(line: str, sexpressions: List[str]) -> str:
                     sliding_window += line[which_line_column + which_sexp_column]
 
             if sliding_window == sexp:
-                print(sliding_window + " compare " + sexp)
-                print(sliding_window == sexp)
-                print(sliding_window is sexp)
                 line_comment_active = not line_comment_active
                 start_of_comment = which_line_column + sexp_length
 
@@ -392,7 +417,7 @@ def create_comment_file(target: str, language) -> str:
     counter = 0
     res = ""
 
-    fieldnames = ['line', 'location']
+    fieldnames = ['line', 'location', 'language']
     while True:
         filename = "commentfile" + str(counter) + ".csv"
         if len(search_file(filename, ".")) == 0:
@@ -400,7 +425,6 @@ def create_comment_file(target: str, language) -> str:
             res = target + "/" + filename
             f = open(res, "a")
             writer = csv.DictWriter(f, fieldnames=fieldnames)
-            f.write(language['language'] + '\n')
             writer.writeheader()
             f.close()
             break
@@ -474,10 +498,9 @@ def write_comment_file(lines_of_comment: List[T], target: str):
     Keyword Arguments:
 
     lines_of_comment -- A list containing comment dictionaries
-    target -- the target directory
-    """
+    target -- the target directory """
 
-    fieldnames = ['line', 'location']
+    fieldnames = ['line', 'location', 'language']
 
     with open(target, "a", encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
