@@ -1,16 +1,15 @@
 import os
 import csv
 import chardet
-from comment_parser import comment_parser
 from typing import TypeVar, Generic, List, NewType
 
 T = TypeVar("T")
 
-wildcard_identifier = '*'
-
 ###############################################################################
 #                    Dictionaries for programming languages                   #
 ###############################################################################
+
+WILDCARD_IDENTIFIER = '*'
 
 c_comment = {
     "multiline_start": '/*',
@@ -100,6 +99,7 @@ perl_comment = {
     "format": 'pl'
 }
 
+
 def get_every_line_from_file(filename: str) -> List[T]:
 
     ###############################################################################
@@ -116,18 +116,19 @@ def get_every_line_from_file(filename: str) -> List[T]:
     except:
         try:
             print("Trouble decoding file " + filename + " now attempting to use utf-8")
-            thefile = open(filename, 'r', encoding="utf-8")
-            lines = thefile.readlines()
-        except:
+            with open(filename, 'r', encoding="utf-8" ) as thefile:
+                lines = thefile.readlines()
+        except:  # UnsupportEncodingException:
             print("failed to decode file" + filename)
 
     if len(lines) != 0:
-        for line_number in range(len(lines)):
+        for line_number in range(len(lines)):  # enumerate(line)
             lines[line_number] = {
                 'line': lines[line_number].strip('\n'),
                 'location': filename + ": " + str(line_number+1)
             }
     return lines
+
 
 def extract_comment_from_path(directory: str, language: dict, output_dir: str):
     """Extracts all comments from file contained inside a path
@@ -140,21 +141,20 @@ def extract_comment_from_path(directory: str, language: dict, output_dir: str):
     language -- the programming language to search in
     """
     files = []
-    dir = "./comment_csv_files/linux_kernal_makefile"
     comment_dir = create_comment_file(output_dir)
 
-    files = files + searchFile('*' + language["format"], directory)
+    files = files + search_file('*' + language["format"], directory)
 
     # if language is python_comment:
-    #     files = files + searchFile('*.py', directory)
+    #     files = files + search_file('*.py', directory)
     # elif language is c_comment:
-    #     files = files + searchFile('*.c', directory)
+    #     files = files + search_file('*.c', directory)
     # elif language is asm_comment:
-    #     files = files + searchFile('*.asm', directory)
+    #     files = files + search_file('*.asm', directory)
     # elif language is makefile_comment:
-    #     files = files + searchFile('*.makefile', directory)
+    #     files = files + search_file('*.makefile', directory)
 
-    line_counter = 0;
+    line_counter = 0
 
     # The maximum line of code for each csv file ###############################
     max_line_per_file = 50000
@@ -234,44 +234,45 @@ def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
                 'location': line['location']
             }
 
-
         if comment and not check_if_comment_is_empty(comment, language):
             assert comment.__class__ is dict, "class of comment must be stored in dictionary"
             res.append(comment)
             # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
-    return res;
+    return res
 
-def searchFile(fileName: str, path: str) -> List[T]:
+
+def search_file(file_name: str, path: str) -> List[T]:
     """Search a root directory for a particular file
 
     Keyboard Arguments:
-    fileName -- name of the file to search for
+    file_name -- name of the file to search for
     path -- path from which to search the file
     """
-    # print("Searching in path: " + path + " for " + fileName)
+    # print("Searching in path: " + path + " for " + file_name)
     res = []
     for root, dirs, files in os.walk(path):
-        if fileName[0] == wildcard_identifier:
+        if file_name[0] == WILDCARD_IDENTIFIER:
             for file in files:
-                sameFormat = check_file_is_same_format(fileName, file)
-                if sameFormat:
+                same_format = check_file_is_same_format(file_name, file)
+                if same_format:
                     if root[-1] != "/" and file[0] != "/":
                         res.append(root + "/" + file)
                     else:
                         res.append(root + file)
         else:
             for file in files:
-                if file == fileName:
+                if file == file_name:
                     if root[-1] != "/" and file[0] != "/":
                         res.append(root + "/" + file)
                     else:
                         res.append(root + file)
 
-            found = file.find(fileName)
+            found = file.find(file_name)
 
             if found != -1:
                 break
     return res
+
 
 def check_file_is_same_format(fileOne: str, fileTwo:str) -> bool:
     """Checks if file1 and file2 are of the same format
@@ -287,6 +288,7 @@ def check_file_is_same_format(fileOne: str, fileTwo:str) -> bool:
         counter += 1
 
     return True
+
 
 def check_triggers_multiline_comment(line: str, multiline_sexp: str, multiline_closing_sexp: str) -> bool:
     """checks if a particular line triggers the start of a multi-line comment
@@ -320,7 +322,8 @@ def check_triggers_multiline_comment(line: str, multiline_sexp: str, multiline_c
 
     return triggers_multiline
 
-def find_text_enclosed_inside(line: str, sexp: List[str]) -> str:
+
+def find_text_enclosed_inside(line: str, sexpressions: List[str]) -> str:
     """Find a text contained inside a sexp (s-expression)
 
     Keyword Arguments:
@@ -330,14 +333,14 @@ def find_text_enclosed_inside(line: str, sexp: List[str]) -> str:
     line_comment_active = False
     res = ""
 
-    for sexp in sexp:
+    for sexp in sexpressions:
         sexp_length = len(sexp)
         start_of_comment = None
         for which_line_column in range(len(line)):
             sliding_window = ""
             for which_sexp_column in range(sexp_length):
                 if which_sexp_column + which_line_column < len(line):
-                    assert which_line_column + which_sexp_column >=0
+                    assert which_line_column + which_sexp_column >= 0
                     assert which_line_column + which_sexp_column < len(line)
                     sliding_window += line[which_line_column + which_sexp_column]
 
@@ -350,11 +353,12 @@ def find_text_enclosed_inside(line: str, sexp: List[str]) -> str:
                 current_line_in_word = which_line_column - start_of_comment + sexp_length
                 not_over_end_of_line = current_line_in_word <= len(line)
 
-            if line_comment_active and sliding_window not in sexp and not_over_end_of_line:
-                if which_line_column >= start_of_comment:
+            if line_comment_active and not_over_end_of_line:
+                if sliding_window not in sexp:
                     res += line[which_line_column]
 
     return res
+
 
 def create_comment_file(target: str) -> str:
     """Create a comment file in the target directory
@@ -369,7 +373,7 @@ def create_comment_file(target: str) -> str:
 
     while True:
         filename = "commentfile" + str(counter) + ".csv"
-        if len(searchFile(filename, ".")) == 0:
+        if len(search_file(filename, ".")) == 0:
             print("creating new comment file " + filename)
             res = target + "/" + filename
             f = open(res, "a")
@@ -377,7 +381,7 @@ def create_comment_file(target: str) -> str:
             content_to_add_to_file = ""
             for column in range(len(first_row)):
                 content = first_row[column]
-                if (column != len(first_row)):
+                if column != len(first_row):
                     content_to_add_to_file += content + ", "
                 else:
                     content_to_add_to_file += content
@@ -388,6 +392,7 @@ def create_comment_file(target: str) -> str:
         counter += 1
 
     return res
+
 
 def strip_comment_of_symbols(comment: str, language: dict) -> str:
     """Strip the comment of all programming language symbols
@@ -401,10 +406,11 @@ def strip_comment_of_symbols(comment: str, language: dict) -> str:
     res = ""
     comment = comment.strip("\n")
     for char in comment:
-            if not char in language["multiline_start"] or not char in language["multiline_end"]:
-                res = res + char;
+        if char not in language["multiline_start"] or char not in language["multiline_end"]:
+            res = res + char
 
     return res
+
 
 def remove_starting_whitespace(comment: str) -> str:
     """Remove all the whitespace before the actual comment
@@ -425,6 +431,7 @@ def remove_starting_whitespace(comment: str) -> str:
 
     return res
 
+
 def check_if_comment_is_empty(comment: dict, language: dict) -> bool:
     """Check if the comment inside the comment is empty
 
@@ -441,13 +448,14 @@ def check_if_comment_is_empty(comment: dict, language: dict) -> bool:
     for symbol in language["single_line"]:
         comment = comment.strip(symbol)
         comment = comment.strip(" ")
-    if comment == "" or comment == "\n":
+    if comment in ('', '\n'):
+
         return True
     return False
 
+
 def write_comment_file(lines_of_comment: List[T], target: str):
     """Append a list comments to a file
-
     Keyword Arguments:
 
     lines_of_comment -- A list containing comment dictionaries
@@ -456,11 +464,11 @@ def write_comment_file(lines_of_comment: List[T], target: str):
 
     fieldnames = ['line', 'location']
 
-    f = open(target, "a")
-    writer = csv.DictWriter(f, fieldnames=fieldnames)
-    writer.writeheader()
-    # for comment in lines_of_comment:
-    #     comment_text = comment['line']
-    #     filepath = comment['location']
-    writer.writerows(lines_of_comment)
-    f.close()
+    with open(target, "a", encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        # fileor comment in lines_ofile_comment:
+        #     comment_text = comment['line']
+        #     fileilepath = comment['location']
+        writer.writerows(lines_of_comment)
+    file.close()
