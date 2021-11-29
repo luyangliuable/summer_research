@@ -46,7 +46,8 @@ class test_app(unittest.TestCase):
         # result.return_value = '""""multi line comment""""'
         # mock = result
         test_case = app.get_every_line_from_file('./test-folder/a.py')
-        self.assertEqual(test_case[0]["line"], '"""multi line comment"""')
+        self.assertEqual(test_case[0]["line"], '"""')
+        self.assertEqual(test_case[1]["line"], "multi line comment")
 
     def test_strip_comment_of_symbols(self):
         test_case = app.strip_comment_of_symbols('/* adasd', app.c_comment)
@@ -56,6 +57,13 @@ class test_app(unittest.TestCase):
         test_case = app.remove_starting_whitespace("   test")
         self.assertEqual(test_case, "test")
 
+    def test_extract_comment_from_line_list(self):
+        line_list = [{'line': '"""', 'location': 'random' }, {'line': "line1", 'location': 'random'}, {'line': "line2", 'location': 'random'}, {'line': '"""', 'location': 'random'}, {'line': "line3", 'location': 'random'}]
+        test_case = app.extract_comment_from_line_list(line_list, app.python_comment)
+        self.assertEqual(test_case[0]['line'], '"""line1line2')
+
+    def test_test_extract_comment_from_multi_line(self):
+        line_list = [{'line: ''}]
 
 def main():
     # Create a test suit
