@@ -15,15 +15,24 @@ c_comment = {
     "multiline_start": '/*',
     "multiline_end": '*/',
     "single_line": ['//', '/*'],
-    "format": 'c'
+    "format": 'c',
+    "language": "c"
 }
 
+kotlin_comment = {
+    "multiline_start": '/*',
+    "multiline_end": '*/',
+    "single_line": ['//', '/*'],
+    "format": 'kt',
+    "language": "kotlin"
+}
 
 cpp_comment = {
     "multiline_start": '/*',
     "multiline_end": '*/',
     "single_line": ['//', '/*'],
-    "format": 'cpp'
+    "format": 'cpp',
+    "language": "c++"
 }
 
 
@@ -31,7 +40,8 @@ javascript_comment = {
     "multiline_start": '/*',
     "multiline_end": '*/',
     "single_line": ['//', '/*'],
-    "format": 'js'
+    "format": 'js',
+    "language": "javascript"
 }
 
 
@@ -39,7 +49,8 @@ gradle_comment = {
     "multiline_start": '',
     "multiline_end": '',
     "single_line": ['//'],
-    "format": 'gradle'
+    "format": 'gradle',
+    "language": "gradle"
 }
 
 
@@ -47,28 +58,33 @@ java_comment = {
     "multiline_start": '/*',
     "multiline_end": '*/',
     "single_line": ['//', '/*'],
-    "format": 'java'
+    "format": 'java',
+    "language": "java"
 }
 
 build_comment = {
     "multiline_start": '',
     "multiline_end": '',
     "single_line": ['#'],
-    "format": 'build'
+    "format": 'build',
+    "language": "build"
 }
 
 python_comment = {
     "multiline_start": '"""',
     "multiline_end": '"""',
     "single_line": ['#', '"""'],
-    "format": 'py'
+    "format": 'py',
+    "language": "python"
 }
 
 asm_comment = {
     "multiline_start": '/*',
     "multiline_end": '*/',
     "single_line": [';', '/*'],
-    "format": 'asm'
+    "format": 'asm',
+    "language": "assembly"
+
 }
 
 
@@ -82,21 +98,24 @@ makefile_comment = {
     "multiline_start": '',
     "multiline_end": '',
     "single_line": ['#'],
-    "format": 'makefile'
+    "format": 'makefile',
+    "language": "makefile"
 }
 
 shell_comment = {
     "multiline_start": '',
     "multiline_end": '',
     "single_line": ['#'],
-    "format": 'sh'
+    "format": 'sh',
+    "language": "shell"
 }
 
 perl_comment = {
     "multiline_start": '=',
     "multiline_end": '=',
     "single_line": ['#', '='],
-    "format": 'pl'
+    "format": 'pl',
+    "language": "perl"
 }
 
 
@@ -141,7 +160,7 @@ def extract_comment_from_path(directory: str, language: dict, output_dir: str):
     language -- the programming language to search in
     """
     files = []
-    comment_dir = create_comment_file(output_dir)
+    comment_dir = create_comment_file(output_dir, language)
 
     files = files + search_file('*' + language["format"], directory)
 
@@ -160,7 +179,7 @@ def extract_comment_from_path(directory: str, language: dict, output_dir: str):
     max_line_per_file = 50000
     for file in files:
         if line_counter > max_line_per_file:
-            comment_dir = create_comment_file(output_dir)
+            comment_dir = create_comment_file(output_dir, language)
             line_counter = 0
 
         lines_in_file = get_every_line_from_file(file)
@@ -344,7 +363,10 @@ def find_text_enclosed_inside(line: str, sexpressions: List[str]) -> str:
                     assert which_line_column + which_sexp_column < len(line)
                     sliding_window += line[which_line_column + which_sexp_column]
 
-            if sliding_window in sexp:
+            if sliding_window == sexp:
+                print(sliding_window + " compare " + sexp)
+                print(sliding_window == sexp)
+                print(sliding_window is sexp)
                 line_comment_active = not line_comment_active
                 start_of_comment = which_line_column + sexp_length
 
@@ -360,7 +382,7 @@ def find_text_enclosed_inside(line: str, sexpressions: List[str]) -> str:
     return res
 
 
-def create_comment_file(target: str) -> str:
+def create_comment_file(target: str, language) -> str:
     """Create a comment file in the target directory
 
     Keyword Arguments:
@@ -368,26 +390,19 @@ def create_comment_file(target: str) -> str:
     target -- the target directory
     """
     counter = 0
-    first_row = ['comment', 'location']
     res = ""
 
+    fieldnames = ['line', 'location']
     while True:
         filename = "commentfile" + str(counter) + ".csv"
         if len(search_file(filename, ".")) == 0:
             print("creating new comment file " + filename)
             res = target + "/" + filename
             f = open(res, "a")
-
-            content_to_add_to_file = ""
-            for column in range(len(first_row)):
-                content = first_row[column]
-                if column != len(first_row):
-                    content_to_add_to_file += content + ", "
-                else:
-                    content_to_add_to_file += content
-                    f.write(content_to_add_to_file)
-                    f.write("\n")
-                    f.close()
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            f.write(language['language'] + '\n')
+            writer.writeheader()
+            f.close()
             break
         counter += 1
 
@@ -466,9 +481,6 @@ def write_comment_file(lines_of_comment: List[T], target: str):
 
     with open(target, "a", encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        # fileor comment in lines_ofile_comment:
-        #     comment_text = comment['line']
-        #     fileilepath = comment['location']
+        # writer.writeheader()
         writer.writerows(lines_of_comment)
     file.close()
