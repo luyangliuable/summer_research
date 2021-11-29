@@ -65,6 +65,23 @@ class test_app(unittest.TestCase):
     # def test_test_extract_comment_from_multi_line(self):
     #     line_list = [{'line: ''}]
 
+    def test_extract_comment_from_c_comment(self):
+        line_list= [{"line":"/*** Main encode function ***/", "location": "random"},
+                    {"line":"enum punycode_status punycode_encode(punycode_uint input_length", "location": "random"},
+                    {"line": "const punycode_uint input[]", "location": "random"},
+                    {"line": "const unsigned char case_flags[]", "location": "random"},
+                    {"line": "punycode_uint* output_length", "location": "random"},
+                    {"line": "char output[]) {", "location": "random"},
+                    {"line": "punycode_uint n, delta, h, b, out, max_out, bias, j, m, q, k, t;", "location": "random"},
+                    {"line": "/* Initialize the state: */", "location": "random"}]
+
+        test_case = app.extract_comment_from_line_list(line_list, app.c_comment)
+        # TODO strip of symbols and whitespace for test1
+        self.assertEqual(test_case[-1]['line'], '* Initialize the state: *')
+        test2 = app.strip_comment_of_symbols(test_case[0]['line'], app.c_comment)
+        test2 = app.remove_starting_whitespace(test2)
+        self.assertEqual(test2, 'Main encode function ')
+
 def main():
     # Create a test suit
     suit = unittest.TestLoader().loadTestsFromTestCase(test_app)
