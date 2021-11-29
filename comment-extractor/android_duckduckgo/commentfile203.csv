@@ -1,0 +1,40 @@
+javascript
+line,location
+blob_converter.js,/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 2
+DuckDuckGo,/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 3
+Copyright Â© 2020 DuckDuckGo. All rights reserved.,/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 5
+"Licensed under the Apache License, Version 2.0 (the ""License"");",/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 7
+you may not use this file except in compliance with the License.,/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 8
+You may obtain a copy of the License at,/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 9
+http:,/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 11
+"Unless required by applicable law or agreed to in writing, software",/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 13
+"distributed under the License is distributed on an ""AS IS"" BASIS,",/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 14
+"WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.",/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 15
+See the License for the specific language governing permissions and,/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 16
+limitations under the License.,/home/luyang/Android/app/src/main/res/raw/blob_converter.js: 17
+This code must be wrapped in an anonymous function which is done in JavaScriptDetector.kt to allow for dynamic changes before wrapping.,/home/luyang/Android/app/src/main/res/raw/login_form_detection_handlers.js: 1
+This code must be wrapped in an anonymous function which is done in JavaScriptDetector.kt to allow for dynamic changes before wrapping.,/home/luyang/Android/app/src/main/res/raw/login_form_detection_functions.js: 1
+JS utility functions used by JsLoginDetector in order to detect login attempts and to ask users to fireproof a website,/home/luyang/Android/app/src/main/res/raw/login_form_detection_functions.js: 2
+DuckDuckGo,/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 2
+Copyright Â© 2020 DuckDuckGo. All rights reserved.,/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 4
+"Licensed under the Apache License, Version 2.0 (the ""License"");",/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 6
+you may not use this file except in compliance with the License.,/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 7
+You may obtain a copy of the License at,/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 8
+http:,/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 10
+"Unless required by applicable law or agreed to in writing, software",/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 12
+"distributed under the License is distributed on an ""AS IS"" BASIS,",/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 13
+"WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.",/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 14
+See the License for the specific language governing permissions and,/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 15
+limitations under the License.,/home/luyang/Android/app/src/main/res/raw/inject_alias.js: 16
+donotsell.js,/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 2
+DuckDuckGo,/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 3
+Copyright Â© 2020 DuckDuckGo. All rights reserved.,/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 5
+"Licensed under the Apache License, Version 2.0 (the ""License"");",/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 7
+you may not use this file except in compliance with the License.,/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 8
+You may obtain a copy of the License at,/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 9
+http:,/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 11
+"Unless required by applicable law or agreed to in writing, software",/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 13
+"distributed under the License is distributed on an ""AS IS"" BASIS,",/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 14
+"WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.",/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 15
+See the License for the specific language governing permissions and,/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 16
+limitations under the License.,/home/luyang/Android/privacy-config/privacy-config-impl/src/main/res/raw/gpc.js: 17

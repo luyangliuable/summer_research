@@ -1,0 +1,22 @@
+java
+line,location
+"Copyright 2015, Mohamed Naufal   Licensed under the Apache License, Version 2.0 (the ""License"");  you may not use this file except in compliance with the License.  You may obtain a copy of the License at       http:www.apache.orglicensesLICENSE-2.0   Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an ""AS IS"" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and  limitations under the License.",/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/ByteBufferPool.java: 15
+XXX: Is this ideal?,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/ByteBufferPool.java: 23
+Using DirectBuffer for zero-copy,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/ByteBufferPool.java: 30
+"Copyright (c) 2020 DuckDuckGo   Licensed under the Apache License, Version 2.0 (the ""License"");  you may not use this file except in compliance with the License.  You may obtain a copy of the License at       http:www.apache.orglicensesLICENSE-2.0   Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an ""AS IS"" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and  limitations under the License.",/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 15
+Representation of an IP Packet ,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 25
+TODO: Reduce public mutability,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 26
+"Reset header size, since we don't need options",/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 116
+at this point the buffer is at position 40. We use put(byte[]) so that the position,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 122
+advances. Else the only 40 bytes will later to written in the TUN,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 123
+Disable UDP checksum validation,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 150
+Clear previous checksum,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 165
+Calculate pseudo-header checksum,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 186
+Clear previous checksum,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 200
+Calculate TCP segment checksum,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 203
+this.optionsAndPadding = buffer.getInt();,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/Packet.java: 288
+"Copyright 2015, Mohamed Naufal   Licensed under the Apache License, Version 2.0 (the ""License"");  you may not use this file except in compliance with the License.  You may obtain a copy of the License at       http:www.apache.orglicensesLICENSE-2.0   Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an ""AS IS"" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and  limitations under the License.",/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/LRUCache.java: 15
+"Copyright 2015, Mohamed Naufal   Licensed under the Apache License, Version 2.0 (the ""License"");  you may not use this file except in compliance with the License.  You may obtain a copy of the License at       http:www.apache.orglicensesLICENSE-2.0   Unless required by applicable law or agreed to in writing, software  distributed under the License is distributed on an ""AS IS"" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and  limitations under the License.",/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/TCB.java: 15
+"TCP has more states, but we need only these",/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/TCB.java: 54
+XXX: Is this ideal?,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/TCB.java: 75
+Ignore,/home/luyang/Android/vpn/src/main/java/xyz/hexene/localvpn/TCB.java: 158
