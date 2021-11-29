@@ -1,4 +1,5 @@
 import os
+import chardet
 from comment_parser import comment_parser
 from typing import TypeVar, Generic, List, NewType
 
@@ -15,6 +16,36 @@ c_comment = {
     "multiline_end": '*/',
     "single_line": ['//', '/*'],
     "format": 'c'
+}
+
+
+cpp_comment = {
+    "multiline_start": '/*',
+    "multiline_end": '*/',
+    "single_line": ['//', '/*'],
+    "format": 'cpp'
+}
+
+
+javscript_comment = {
+    "multiline_start": '/*',
+    "multiline_end": '*/',
+    "single_line": ['//', '/*'],
+    "format": 'js'
+}
+
+java_comment = {
+    "multiline_start": '/*',
+    "multiline_end": '*/',
+    "single_line": ['//', '/*'],
+    "format": 'java'
+}
+
+build_comment = {
+    "multiline_start": '',
+    "multiline_end": '',
+    "single_line": ['#'],
+    "format": 'build'
 }
 
 python_comment = {
@@ -45,7 +76,12 @@ makefile_comment = {
     "format": 'makefile'
 }
 
-shell_comment = makefile_comment
+shell_comment = {
+    "multiline_start": '',
+    "multiline_end": '',
+    "single_line": ['#'],
+    "format": 'sh'
+}
 
 perl_comment = {
     "multiline_start": '=',
@@ -54,14 +90,33 @@ perl_comment = {
     "format": 'pl'
 }
 
-def get_every_line_from_file(file: str) -> List[T]:
-    thefile = open(file, 'r')
-    lines = thefile.readlines()
-    for line_number in range(len(lines)):
-        lines[line_number] = {
-            'line': lines[line_number].strip('\n'),
-            'location': file + ": " + str(line_number+1)
-        }
+def get_every_line_from_file(filename: str) -> List[T]:
+
+    ###############################################################################
+    #                         getting encoding of the file                        #
+    ###############################################################################
+
+    lines = []
+    with open(filename, 'rb') as thefile:
+        encoding = chardet.detect(bytes(thefile.read()))['encoding']
+
+    try:
+        thefile = open(filename, 'r', encoding=encoding)
+        lines = thefile.readlines()
+    except:
+        try:
+            print("Trouble decoding file " + filename + " now attempting to use utf-8")
+            thefile = open(filename, 'r', encoding="utf-8")
+            lines = thefile.readlines()
+        except:
+            print("failed to decode file" + filename)
+
+    if len(lines) != 0:
+        for line_number in range(len(lines)):
+            lines[line_number] = {
+                'line': lines[line_number].strip('\n'),
+                'location': filename + ": " + str(line_number+1)
+            }
     return lines
 
 def extract_comment_from_path(directory: str, language: dict, output_dir: str):
@@ -126,18 +181,43 @@ def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
     res = []
     multiline_comment = False
 
+    # for line in lines:
+    #     comment = ""
+    #     if check_triggers_multiline_comment(line['line'], language["multiline_start"], language["multiline_end"]):
+    #         multiline_comment = not multiline_comment
+
+    #     if multiline_comment:
+    #         comment = {
+    #             'line': line['line'],
+    #             'location': line['location']
+    #         }
+    #     elif comment == "":
+    #         comment = {
+    #             'line': find_text_enclosed_inside(line['line'], language["single_line"]),
+    #             'location': line['location']
+    #         }
+
+
+    #     if comment != "" and not check_if_comment_is_empty(comment, language):
+    #         assert comment.__class__ is dict, "class of comment must be stored in dictionary"
+    #         res.append(comment)
+    # return res;
+
+    single_multiline_comment = ""
     for line in lines:
-        single_multiline_comment = ""
         comment = ""
         if check_triggers_multiline_comment(line['line'], language["multiline_start"], language["multiline_end"]):
-            if multiline_comment is False:
+            if not multiline_comment:
                 multiline_comment = True
             else:
-                comment = single_multiline_comment
+                comment = {
+                    'line': single_multiline_comment,
+                    'location': line['location']
+                }
                 multiline_comment = False
 
         if multiline_comment:
-            single_multiline_comment += line['line']
+            single_multiline_comment += line['line'].strip("\n")
         elif comment == "":
             comment = {
                 'line': find_text_enclosed_inside(line['line'], language["single_line"]),
@@ -150,42 +230,6 @@ def extract_comment_from_line_list(lines: List[T], language: dict) -> List[T]:
             res.append(comment)
             # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
     return res;
-
-    # for line in lines:
-    #     comment = None
-    #     if check_triggers_multiline_comment(line['line'], language["multiline_start"], language["multiline_end"]):
-    #         if multiline_comment:
-    #             comment = {
-    #                 'line': single_multiline_comment,
-    #                 'location': line['location']
-    #             }
-    #             single_multiline_comment = ""
-    #             multiline_comment = False
-    #         else:
-    #             multiline_comment = True
-
-
-
-    #     if multiline_comment and not check_if_comment_is_empty(line, language):
-    #         single_multiline_comment += line['line']
-    #     elif not comment:
-    #         comment = {
-    #             'line': find_text_enclosed_inside(line['line'], language["single_line"]),
-    #             'location': line['location']
-    #         }
-
-    #     if single_multiline_comment != "" and multiline_comment:
-    #         assert comment is None, "single line and multiline comment must not coexist" + str(comment)
-    #         comment = {
-    #             'line': single_multiline_comment,
-    #             'location': line['location']
-    #         }
-
-    #     if comment and not check_if_comment_is_empty(comment, language):
-    #         assert comment.__class__ is dict, "class of comment must be stored in dictionary"
-    #         res.append(comment)
-    #         # res.append(comment_parser.extract_comments(file, mime='text/x-python'))
-    # return res;
 
 def searchFile(fileName: str, path: str) -> List[T]:
     """Search a root directory for a particular file
@@ -201,11 +245,17 @@ def searchFile(fileName: str, path: str) -> List[T]:
             for file in files:
                 sameFormat = check_file_is_same_format(fileName, file)
                 if sameFormat:
-                    res.append(root + "/" + file)
+                    if root[-1] != "/" and file[0] != "/":
+                        res.append(root + "/" + file)
+                    else:
+                        res.append(root + file)
         else:
             for file in files:
                 if file == fileName:
-                    res.append(root + "/" + file)
+                    if root[-1] != "/" and file[0] != "/":
+                        res.append(root + "/" + file)
+                    else:
+                        res.append(root + file)
 
             found = file.find(fileName)
 
@@ -221,7 +271,7 @@ def check_file_is_same_format(fileOne: str, fileTwo:str) -> bool:
     fileTwo -- the second file in the comparison
     """
     counter = 1
-    while fileOne[-counter] != "." and fileTwo[-counter] != "." and counter < min(len(fileOne), len(fileTwo)):
+    while fileOne[-counter] != "." and counter < min(len(fileOne), len(fileTwo)):
         if fileOne[-counter] != fileTwo[-counter]:
             return False
         counter += 1
