@@ -51,8 +51,8 @@ languages = {
         "language": "gradle"
     },
     "build": {
-        "multiline_start": '',
-        "multiline_end": '',
+        "multiline_start": '▓',
+        "multiline_end": '▓',
         "single_line": ['#'],
         "format": 'build',
         "language": "build"
@@ -74,15 +74,15 @@ languages = {
         "language": "assembly"
     },
     "makefile": {
-        "multiline_start": '',
-        "multiline_end": '',
+        "multiline_start": '▓',
+        "multiline_end": '▓',
         "single_line": ['#'],
         "format": 'makefile',
         "language": "makefile"
     },
     "shell": {
-        "multiline_start": '',
-        "multiline_end": '',
+        "multiline_start": '▓',
+        "multiline_end": '▓',
         "single_line": ['#'],
         "format": 'shell',
         "language": "shell"
