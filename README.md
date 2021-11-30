@@ -44,3 +44,5 @@ AI research project from uni
   * [ ] **Week 8:** Improving ai model accuracy
   * [ ] **Week 9:** front-end and app development<br />
 
+## Sources
+[Kotlin coding standards](https://kotlinlang.org/docs/coding-conventions.html#trailing-commas)

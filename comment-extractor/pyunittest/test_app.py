@@ -60,7 +60,9 @@ class test_app(unittest.TestCase):
     def test_extract_comment_from_line_list(self):
         line_list = [{'line': '"""', 'location': 'random' }, {'line': "line1", 'location': 'random'}, {'line': "line2", 'location': 'random'}, {'line': '"""', 'location': 'random'}, {'line': "line3", 'location': 'random'}]
         test_case = app.extract_comment_from_line_list(line_list, app.python_comment)
-        self.assertEqual(test_case[0]['line'], '"""line1line2')
+        test_case = app.strip_comment_of_symbols(test_case[0]['line'], app.python_comment)
+        test_case = app.remove_starting_whitespace(test_case)
+        self.assertEqual(test_case, 'line1 line2  ')
 
     # def test_test_extract_comment_from_multi_line(self):
     #     line_list = [{'line: ''}]
@@ -81,6 +83,70 @@ class test_app(unittest.TestCase):
         test2 = app.strip_comment_of_symbols(test_case[0]['line'], app.c_comment)
         test2 = app.remove_starting_whitespace(test2)
         self.assertEqual(test2, 'Main encode function ')
+
+
+    def test_extract_multiline_comment_from_c(self):
+        line_list= [
+            {"line":"/* Main encode function", "location": "random"},
+            {"line": "beep boop", "location": "random"},
+            {"line": "Initialize the state: */", "location": "random"},
+        ]
+
+        test_case = app.extract_comment_from_line_list(line_list, app.c_comment)
+        test2 = app.strip_comment_of_symbols(test_case[0]['line'], app.c_comment)
+        test2 = app.remove_starting_whitespace(test2)
+        self.assertEqual(test2, 'Main encode function beep boop Initialize the state:  ')
+
+
+    def test_check_trigger_multiline_comment_c(self):
+        test_case = app.check_triggers_multiline_comment('/*', app.c_comment['multiline_start'], app.c_comment['multiline_end'])
+        test_case2 = app.check_triggers_multiline_comment('*/', app.c_comment['multiline_start'], app.c_comment['multiline_end'])
+        test_case3 = app.check_triggers_multiline_comment('/* no */', app.c_comment['multiline_start'], app.c_comment['multiline_end'])
+        self.assertTrue(test_case)
+        self.assertTrue(test_case2)
+        self.assertFalse(test_case3)
+
+
+    def test_iterate_dictionary_for_header(self):
+        test_case = app.iterate_dictionary_for_header(app.languages)
+        self.assertEqual(['c', 'kotlin', 'c++', 'javascript', 'gradle', 'build', 'python', 'assembly', 'makefile', 'shell', 'perl', 'java'], test_case)
+
+    def test_save_to_dictionary(self):
+        test_case = app.save_in_dict('line', 'location', 'language')
+        self.assertTrue(test_case, {"line": 'line', "location": 'location', 'language': 'language'})
+
+    # def test_wrong_files_c(self):
+    #     location = "./test-folder/test.c"
+    #     test_case = app.get_every_line_from_file(location)
+    #     self.assertEqual(test_case[-1], {'line': "#include <linux/parman.h>", 'location': './test-folder/test.c', 'language': 'c'})
+
+    def test_extract_wrong_comments_c(self):
+        location = "./test-folder/test.c"
+        test_case = app.get_every_line_from_file(location)
+        test_case = app.extract_comment_from_line_list(test_case, app.c_comment)
+        self.assertNotEqual(test_case[-1]['line'], "wrong comment")
+
+    def test_write_wrong_comments_c(self):
+        comment = [{"line": "/* * lib/parman.c - Manager for linear priority array areas */", "location": "random", "language": 'c'}, {"line": "/* test 1 */", "location": "random", "language": 'c'}]
+
+        location = app.create_comment_file('./', app.c_comment)
+        app.write_comment_file(comment, location)
+
+    def test_full_write_file(self):
+        file = "./test-folder/parman.c"
+        comment_dir = './dump.csv'
+        lines_in_file = app.get_every_line_from_file(file)
+        comments_in_file = app.extract_comment_from_line_list(lines_in_file, app.c_comment)
+
+        # Strip comment of symbols ####################################################
+        comments = [app.save_in_dict(app.strip_comment_of_symbols(comment['line'], app.c_comment), comment['location'], app.c_comment) for comment in comments_in_file]
+        # comments = [{'line': strip_comment_of_symbols(comment['line'], language), 'location': comment['location']} for comment in comments_in_file]
+
+        # Strip comment of starting whitespace ########################################
+        # comments = [remove_starting_whitespace(comments[i]['line']) for i in range(len( comments ))]
+        comments = [app.save_in_dict(app.remove_starting_whitespace(comment['line']), comment['location'], app.c_comment['language']) for comment in comments]
+
+        app.write_comment_file(comments, comment_dir)
 
 def main():
     # Create a test suit
